@@ -1,0 +1,23 @@
+{
+  "name": "symfonyCollectionJs",
+  "main": "symfonyCollectionJs.js",
+  "homepage": "https://github.com/ruano-a/symfonyCollectionJs",
+  "authors": [
+    "ruano-a"
+  ],
+  "description": "A jquery plugin to dynamically create elements of a symfony form collection.",
+  "keywords": [
+    "js",
+    "symfony",
+    "form",
+    "collection"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
