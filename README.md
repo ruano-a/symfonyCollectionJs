@@ -35,6 +35,7 @@ var defaults =  {
         btn_down_selector:      '.collection-down',
     };
 ~~~~
+Note that the buttons are not created by the plugin but have to already exist.
 
 # Other functionalities
 
