@@ -1,6 +1,9 @@
 # symfonyCollectionJs
 A jquery plugin to dynamically create elements of a symfony form collection.
 
+# Important note
+Moving an element, or creating / deleting one on the middle invalid the index. The fix is in development.
+
 I created this plugin because the common Js plugin had a bug that didn't let me place the button to add an element wherever I wanted. And I wanted to be able to add dynamically elements.
 # basic usage
 
