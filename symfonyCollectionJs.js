@@ -2,6 +2,9 @@ jQuery.fn.extend({
     formCollection: function(options, param) {
         var settings;
         var selector = this.selector;
+        var dataKey = 'collectionData';
+        var placeHolderAlias = '__AttrName__';
+
         if (options === undefined || typeof options === 'object') {
             var defaults = {
                 max_elems: 100,
@@ -58,10 +61,62 @@ jQuery.fn.extend({
                 });
             };
 
-            var create_elem = function() {
-                var newForm = prototype;
-                newForm = newForm.replace(/__name__/g, n);
-                $newForm = $(newForm);
+            var getAttributesWithThisValue = function($elem, value) {
+                var result = {};
+                $.each($elem[0].attributes, function() {
+                    if (this.value && this.value.indexOf(value) !== -1) {
+                        result[this.name] = this.value.replace(/__name__/g, placeHolderAlias);
+                    }
+                });
+                return (result);
+            };
+
+            var mark_elem_nodes = function($elem) {
+                var attrs = getAttributesWithThisValue($elem, '__name__');
+                if (!$.isEmptyObject(attrs))
+                    $elem.attr('data-'+dataKey, JSON.stringify(attrs));
+                $elem.find('[id*="__name__"], [name*="__name__"], [for*="__name__"]').each(function(){
+                    attrs = getAttributesWithThisValue($(this), '__name__');
+                    if (!$.isEmptyObject(attrs))
+                        $(this).attr('data-'+dataKey, JSON.stringify(attrs));
+                });
+
+                return ($elem);
+            };
+
+            var update_index = function($elem, index) {
+                var attrsToUpdate = $elem.attr('data-'+dataKey);
+                attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
+                $.each(attrsToUpdate, function(name, value) {
+                    $elem.attr(name, value.replace(placeHolderAlias, index));
+                });
+                $elem.find('[data-'+dataKey+']').each(function(){
+                    $node = $(this);
+                    attrs = getAttributesWithThisValue($node, '__name__');
+                    attrsToUpdate = $node.attr('data-'+dataKey);
+                    attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
+                    $.each(attrsToUpdate, function(name, value) {
+                        $node.attr(name, value.replace(placeHolderAlias, index));
+                    });
+                });
+            };
+
+            // if i > to the max index, it doesn't cause problems
+            var update_indexes_from = function(i) {
+                $collection_root.children().slice(i).each(function(){
+                    update_index($(this), i);
+                    i++;
+                });
+            };
+
+            var create_elem = function(index) {
+                if (index === undefined)
+                    index = n;
+                var newFormHtml = prototype;
+                var $newForm = mark_elem_nodes($(newFormHtml));
+                //won't replace the ones in data since we put an alias
+                newFormHtml = $newForm[0].outerHTML.replace(/__name__/g, index);
+                $newForm = $(newFormHtml);
                 init_elem($newForm);
                 return ($newForm);
             };
@@ -69,9 +124,10 @@ jQuery.fn.extend({
             var add_elem_down = function($elem) {
                 if (n >= settings.max_elems)
                     return false;
-                var $new_elem = create_elem();
+                var $new_elem = create_elem($elem.index() + 1);
                 $elem.after($new_elem);
                 n++;
+                update_indexes_from($elem.index() + 2);
                 return ($new_elem);
             };
 
@@ -83,22 +139,30 @@ jQuery.fn.extend({
             };
 
             var delete_elem = function($elem) {
+                var index = $elem.index();
                 $elem.remove();
                 n--;
+                update_indexes_from(index);
             };
 
             var move_elem_up = function($elem) {
                 $prev = $elem.prev();
                 if (!$prev)
                     return false;
+                newIndex = $prev.index();
                 $prev.before($elem);
+                update_index($elem, newIndex);
+                update_index($prev, newIndex + 1);
             };
 
             var move_elem_down = function($elem) {
                 $next = $elem.next();
                 if (!$next)
                     return false;
+                newIndex = $next.index();
                 $next.after($elem);
+                update_index($elem, newIndex);
+                update_index($next, newIndex - 1);
             };
 
             switch (options) {
@@ -107,9 +171,12 @@ jQuery.fn.extend({
                     break;
                 case 'clear':
                     $collection_root.empty();
+                    n = 0;
                     break;
                 case 'remove':
                     $collection_root.children().eq(param).remove();
+                    n--;
+                    update_indexes_from(param);
                     break;
                 default:
                     var init_existing = function() {
