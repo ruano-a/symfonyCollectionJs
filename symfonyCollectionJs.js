@@ -14,6 +14,12 @@ jQuery.fn.extend({
                 post_delete: function($delete_elem) {
                     return true;
                 },
+                post_up: function($elem, $switched_elem) {
+                    return true;
+                },
+                post_down: function($elem, $switched_elem) {
+                    return true;
+                },
                 other_btn_add_selector: null,
                 btn_add_selector: '.collection-add',
                 btn_delete_selector: '.collection-delete',
@@ -54,10 +60,16 @@ jQuery.fn.extend({
                     settings.post_delete($elem);
                 });
                 $elem.find(settings.btn_up_selector).click(function() {
-                    move_elem_up($elem);
+                    $switched_elem = move_elem_up($elem);
+                    if ($switched_elem) {
+                        settings.post_up($elem, $switched_elem);
+                    }
                 });
                 $elem.find(settings.btn_down_selector).click(function() {
-                    move_elem_down($elem);
+                    $switched_elem = move_elem_down($elem);
+                    if ($switched_elem) {
+                        settings.post_down($elem, $switched_elem);
+                    }
                 });
             };
 
@@ -153,6 +165,8 @@ jQuery.fn.extend({
                 $prev.before($elem);
                 update_index($elem, newIndex);
                 update_index($prev, newIndex + 1);
+
+                return ($prev);
             };
 
             var move_elem_down = function($elem) {
@@ -163,6 +177,8 @@ jQuery.fn.extend({
                 $next.after($elem);
                 update_index($elem, newIndex);
                 update_index($next, newIndex - 1);
+
+                return ($next);
             };
 
             switch (options) {
