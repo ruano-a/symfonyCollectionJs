@@ -29,6 +29,8 @@ var defaults =  {
         max_elems:              100,
         post_add:               function($new_elem) { return true; },
         post_delete:            function($delete_elem) { return true; },
+        post_up:                function($elem, $switched_elem) { return true; },
+        post_down:              function($elem, $switched_elem) { return true; },
         other_btn_add_selector: null,
         btn_add_selector:       '.collection-add',
         btn_delete_selector:    '.collection-delete',
@@ -36,6 +38,8 @@ var defaults =  {
         btn_down_selector:      '.collection-down',
     };
 ~~~~
+In post_up and post_down, $switched_elem is the moved elem that the user didn't click on.
+
 Note that the buttons are not created by the plugin but have to already exist.
 
 # Other functionalities
@@ -61,7 +65,7 @@ Symfony (2 or more)
 Jquery (1.12.4 or more should be fine, unclear)
 
 # Note
-
+Currently, the indexes are maintained only in the attributes (id, name, for); since it is the common case. If you want to do more, you should use the callbacks.
 I'm not that much a fan of how I maintained the indexes after a removal / add in middle / move. If someone has a better / simpler way, I'm interested (I didn't want to make the user add data in the form or something like that).
 
 For advances features, you should use the plugin of ninsuo.
