@@ -31,7 +31,7 @@ var defaults =  {
         post_delete:            function($delete_elem) { return true; },
         post_up:                function($elem, $switched_elem) { return true; },
         post_down:              function($elem, $switched_elem) { return true; },
-        other_btn_add_selector: null,
+        other_btn_add:          null,
         btn_add_selector:       '.collection-add',
         btn_delete_selector:    '.collection-delete',
         btn_up_selector:        '.collection-up',
