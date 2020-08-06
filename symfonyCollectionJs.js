@@ -3,7 +3,6 @@ jQuery.fn.extend({
         var settings;
         var selector = this.selector;
         var dataKey = 'collectionData';
-        var placeHolderAlias = '__AttrName__';
 
         if (options === undefined || typeof options === 'object') {
             var defaults = {
@@ -20,11 +19,13 @@ jQuery.fn.extend({
                 post_down: function($elem, $switched_elem) {
                     return true;
                 },
-                other_btn_add: null,
-                btn_add_selector: '.collection-add',
-                btn_delete_selector: '.collection-delete',
-                btn_up_selector: '.collection-up',
-                btn_down_selector: '.collection-down',
+                other_btn_add:          null,
+                btn_add_selector:       '.collection-add',
+                btn_delete_selector:    '.collection-delete',
+                btn_up_selector:        '.collection-up',
+                btn_down_selector:      '.collection-down',
+                prototype_name_alias:      '__AttrName__',
+                prototype_name:         '__name__'
             };
             settings = $.extend(true, {}, defaults, options);
             if (typeof globalSettings == 'undefined')
@@ -75,40 +76,41 @@ jQuery.fn.extend({
 
             var getAttributesWithThisValue = function($elem, value) {
                 var result = {};
+                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 $.each($elem[0].attributes, function() {
                     if (this.value && this.value.indexOf(value) !== -1) {
-                        result[this.name] = this.value.replace(/__name__/g, placeHolderAlias);
+                        result[this.name] = this.value.replace(prototypeNameRegexp, settings.prototype_name_alias);
                     }
                 });
-                return (result);
+                return result;
             };
 
             var mark_elem_nodes = function($elem) {
-                var attrs = getAttributesWithThisValue($elem, '__name__');
+                var attrs = getAttributesWithThisValue($elem, settings.prototype_name);
                 if (!$.isEmptyObject(attrs))
                     $elem.attr('data-'+dataKey, JSON.stringify(attrs));
-                $elem.find('[id*="__name__"], [name*="__name__"], [for*="__name__"]').each(function(){
-                    attrs = getAttributesWithThisValue($(this), '__name__');
+                $elem.find('[id*="'+settings.prototype_name+'"], [name*="'+settings.prototype_name+'"], [for*="'+settings.prototype_name+'"]').each(function(){
+                    attrs = getAttributesWithThisValue($(this), settings.prototype_name);
                     if (!$.isEmptyObject(attrs))
                         $(this).attr('data-'+dataKey, JSON.stringify(attrs));
                 });
 
-                return ($elem);
+                return $elem;
             };
 
             var update_index = function($elem, index) {
                 var attrsToUpdate = $elem.attr('data-'+dataKey);
                 attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
                 $.each(attrsToUpdate, function(name, value) {
-                    $elem.attr(name, value.replace(placeHolderAlias, index));
+                    $elem.attr(name, value.replace(settings.prototype_name_alias, index));
                 });
                 $elem.find('[data-'+dataKey+']').each(function(){
                     $node = $(this);
-                    attrs = getAttributesWithThisValue($node, '__name__');
+                    attrs = getAttributesWithThisValue($node, settings.prototype_name);
                     attrsToUpdate = $node.attr('data-'+dataKey);
                     attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
                     $.each(attrsToUpdate, function(name, value) {
-                        $node.attr(name, value.replace(placeHolderAlias, index));
+                        $node.attr(name, value.replace(settings.prototype_name_alias, index));
                     });
                 });
             };
@@ -126,11 +128,12 @@ jQuery.fn.extend({
                     index = n;
                 var newFormHtml = prototype;
                 var $newForm = mark_elem_nodes($(newFormHtml));
+                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 //won't replace the ones in data since we put an alias
-                newFormHtml = $newForm[0].outerHTML.replace(/__name__/g, index);
+                newFormHtml = $newForm[0].outerHTML.replace(prototypeNameRegexp, index);
                 $newForm = $(newFormHtml);
                 init_elem($newForm);
-                return ($newForm);
+                return $newForm;
             };
 
             var add_elem_down = function($elem) {
@@ -140,7 +143,7 @@ jQuery.fn.extend({
                 $elem.after($new_elem);
                 n++;
                 update_indexes_from($elem.index() + 2);
-                return ($new_elem);
+                return $new_elem;
             };
 
             var add_elem_bottom = function() {
@@ -166,7 +169,7 @@ jQuery.fn.extend({
                 update_index($elem, newIndex);
                 update_index($prev, newIndex + 1);
 
-                return ($prev);
+                return $prev;
             };
 
             var move_elem_down = function($elem) {
@@ -178,7 +181,7 @@ jQuery.fn.extend({
                 update_index($elem, newIndex);
                 update_index($next, newIndex - 1);
 
-                return ($next);
+                return $next;
             };
 
             switch (options) {
