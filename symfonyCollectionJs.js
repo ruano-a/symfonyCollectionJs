@@ -20,7 +20,7 @@ jQuery.fn.extend({
                 post_down: function($elem, $switched_elem) {
                     return true;
                 },
-                other_btn_add_selector: null,
+                other_btn_add: null,
                 btn_add_selector: '.collection-add',
                 btn_delete_selector: '.collection-delete',
                 btn_up_selector: '.collection-up',
@@ -202,8 +202,17 @@ jQuery.fn.extend({
                     };
 
                     init_existing();
-                    if (settings.other_btn_add_selector) {
-                        $(settings.other_btn_add_selector).click(function() {
+                    if (settings.other_btn_add) {
+                        if (typeof settings.other_btn_add === 'string')
+                            var $otherBtnAdd = $(settings.other_btn_add)
+                        else if (settings.other_btn_add instanceof jQuery)
+                            var $otherBtnAdd = settings.other_btn_add;
+                        else
+                        {
+                            console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
+                            break;
+                        }
+                        $otherBtnAdd.click(function() {
                             add_elem_bottom();
                         });
                     }
