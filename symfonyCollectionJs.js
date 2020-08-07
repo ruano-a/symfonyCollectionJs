@@ -147,6 +147,8 @@ jQuery.fn.extend({
             };
 
             var add_elem_bottom = function() {
+                if (n >= settings.max_elems)
+                    return false;
                 var $new_elem = create_elem();
                 $collection_root.append($new_elem);
                 n++;
