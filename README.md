@@ -35,10 +35,14 @@ var defaults =  {
         btn_add_selector:       '.collection-add',
         btn_delete_selector:    '.collection-delete',
         btn_up_selector:        '.collection-up',
-        btn_down_selector:      '.collection-down',
+        btn_down_selector:      '.collection-down'
+        prototype_name_alias:      '__AttrName__',
+        prototype_name:         '__name__'
     };
 ~~~~
 In post_up and post_down, $switched_elem is the moved elem that the user didn't click on.
+prototype_name_alias is used in internal to maintain indexes, you most likely won't need ever to change this parameter.
+prototype_name should probably be changed if you use nested collection (in the FormType too, with the same value).
 
 Note that the buttons are not created by the plugin but have to already exist.
 
