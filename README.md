@@ -27,7 +27,8 @@ $('.collection').formCollection();
 ~~~~
 var defaults =  {
         max_elems:              100,
-        post_add:               function($new_elem) { return true; },
+        call_post_add_on_init:  false,
+        post_add:               function($new_elem, is_init) { return true; },
         post_delete:            function($delete_elem) { return true; },
         post_up:                function($elem, $switched_elem) { return true; },
         post_down:              function($elem, $switched_elem) { return true; },
