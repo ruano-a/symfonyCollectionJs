@@ -7,7 +7,8 @@ jQuery.fn.extend({
         if (options === undefined || typeof options === 'object') {
             var defaults = {
                 max_elems: 100,
-                post_add: function($new_elem) {
+                call_post_add_on_init: false,
+                post_add: function($new_elem, isInit) {
                     return true;
                 },
                 post_delete: function($delete_elem) {
@@ -24,7 +25,7 @@ jQuery.fn.extend({
                 btn_delete_selector:    '.collection-delete',
                 btn_up_selector:        '.collection-up',
                 btn_down_selector:      '.collection-down',
-                prototype_name_alias:      '__AttrName__',
+                prototype_name_alias:   '__AttrName__',
                 prototype_name:         '__name__'
             };
             settings = $.extend(true, {}, defaults, options);
@@ -54,7 +55,7 @@ jQuery.fn.extend({
             var init_elem = function($elem) {
                 $elem.find(settings.btn_add_selector).click(function() {
                     var $new_elem = add_elem_down($elem);
-                    settings.post_add($new_elem);
+                    settings.post_add($new_elem, false);
                 });
                 $elem.find(settings.btn_delete_selector).click(function() {
                     delete_elem($elem);
@@ -152,7 +153,7 @@ jQuery.fn.extend({
                 var $new_elem = create_elem();
                 $collection_root.append($new_elem);
                 n++;
-                settings.post_add($new_elem);
+                settings.post_add($new_elem, false);
             };
 
             var delete_elem = function($elem) {
@@ -203,6 +204,8 @@ jQuery.fn.extend({
                     var init_existing = function() {
                         $collection_root.children().each(function() {
                             init_elem($(this));
+                            if (settings.call_post_add_on_init)
+                                settings.post_add($(this), true);
                         });
                     };
 
