@@ -8,7 +8,7 @@ jQuery.fn.extend({
             var defaults = {
                 max_elems: 100,
                 call_post_add_on_init: false,
-                post_add: function($new_elem, isInit) {
+                post_add: function($new_elem, is_init) {
                     return true;
                 },
                 post_delete: function($delete_elem) {
