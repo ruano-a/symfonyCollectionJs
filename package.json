@@ -5,5 +5,8 @@
   "main": "symfonyCollectionJs.js",
   "repository": "https://github.com/ruano-a/symfonyCollectionJs.git",
   "author": "Aurelien Ruano <aurelien.ruano@epitech.eu>",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "jquery": "^1.12.4"
+  }
 }
