@@ -3,6 +3,16 @@ A jquery plugin to dynamically create elements of a symfony form collection.
 
 I created this plugin because the common Js plugin had a bug that didn't let me place the button to add an element wherever I wanted.  And I wanted to be able to add dynamically elements.
 
+# install with yarn
+```sh
+yarn add symfony-collection-js
+```
+
+# or install with npm
+```sh
+npm install symfony-collection-js
+```
+
 # basic usage
 
 Your collection container should have the prototype mentioned in the symfony documentation, and an id or a class. So in your form type:

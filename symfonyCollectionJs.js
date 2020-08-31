@@ -1,5 +1,31 @@
-jQuery.fn.extend({
-    formCollection: function(options, param) {
+// Uses CommonJS, AMD or browser globals to create a jQuery plugin.
+(function(factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node/CommonJS
+        module.exports = function(root, jQuery) {
+            if (jQuery === undefined) {
+                // require('jQuery') returns a factory that requires window to
+                // build a jQuery instance, we normalize how we use modules
+                // that require this pattern but the window provided is a noop
+                // if it's defined (how jquery works)
+                if (typeof window !== 'undefined') {
+                    jQuery = require('jquery');
+                } else {
+                    jQuery = require('jquery')(root);
+                }
+            }
+            factory(jQuery);
+            return jQuery;
+        };
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function($) {
+    $.fn.formCollection = function(options, param) {
         var settings;
         var selector = this.selector;
         var dataKey = 'collectionData';
@@ -20,13 +46,13 @@ jQuery.fn.extend({
                 post_down: function($elem, $switched_elem) {
                     return true;
                 },
-                other_btn_add:          null,
-                btn_add_selector:       '.collection-add',
-                btn_delete_selector:    '.collection-delete',
-                btn_up_selector:        '.collection-up',
-                btn_down_selector:      '.collection-down',
-                prototype_name_alias:   '__AttrName__',
-                prototype_name:         '__name__'
+                other_btn_add: null,
+                btn_add_selector: '.collection-add',
+                btn_delete_selector: '.collection-delete',
+                btn_up_selector: '.collection-up',
+                btn_down_selector: '.collection-down',
+                prototype_name_alias: '__AttrName__',
+                prototype_name: '__name__'
             };
             settings = $.extend(true, {}, defaults, options);
             if (typeof globalSettings == 'undefined')
@@ -36,12 +62,10 @@ jQuery.fn.extend({
             if ($.inArray(options, ['add', 'remove', 'clear']) === -1) {
                 console.log('Invalid options');
                 return false;
-            }
-            else if (options === 'remove' && param === undefined) {
+            } else if (options === 'remove' && param === undefined) {
                 console.log('Missing index');
                 return false;
-            }
-            else if (typeof globalSettings == 'undefined' || globalSettings[selector] === undefined) {
+            } else if (typeof globalSettings == 'undefined' || globalSettings[selector] === undefined) {
                 console.log('Element not initialized');
                 return false;
             }
@@ -89,26 +113,26 @@ jQuery.fn.extend({
             var mark_elem_nodes = function($elem) {
                 var attrs = getAttributesWithThisValue($elem, settings.prototype_name);
                 if (!$.isEmptyObject(attrs))
-                    $elem.attr('data-'+dataKey, JSON.stringify(attrs));
-                $elem.find('[id*="'+settings.prototype_name+'"], [name*="'+settings.prototype_name+'"], [for*="'+settings.prototype_name+'"]').each(function(){
+                    $elem.attr('data-' + dataKey, JSON.stringify(attrs));
+                $elem.find('[id*="' + settings.prototype_name + '"], [name*="' + settings.prototype_name + '"], [for*="' + settings.prototype_name + '"]').each(function() {
                     attrs = getAttributesWithThisValue($(this), settings.prototype_name);
                     if (!$.isEmptyObject(attrs))
-                        $(this).attr('data-'+dataKey, JSON.stringify(attrs));
+                        $(this).attr('data-' + dataKey, JSON.stringify(attrs));
                 });
 
                 return $elem;
             };
 
             var update_index = function($elem, index) {
-                var attrsToUpdate = $elem.attr('data-'+dataKey);
+                var attrsToUpdate = $elem.attr('data-' + dataKey);
                 attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
                 $.each(attrsToUpdate, function(name, value) {
                     $elem.attr(name, value.replace(settings.prototype_name_alias, index));
                 });
-                $elem.find('[data-'+dataKey+']').each(function(){
+                $elem.find('[data-' + dataKey + ']').each(function() {
                     $node = $(this);
                     attrs = getAttributesWithThisValue($node, settings.prototype_name);
-                    attrsToUpdate = $node.attr('data-'+dataKey);
+                    attrsToUpdate = $node.attr('data-' + dataKey);
                     attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
                     $.each(attrsToUpdate, function(name, value) {
                         $node.attr(name, value.replace(settings.prototype_name_alias, index));
@@ -118,7 +142,7 @@ jQuery.fn.extend({
 
             // if i > to the max index, it doesn't cause problems
             var update_indexes_from = function(i) {
-                $collection_root.children().slice(i).each(function(){
+                $collection_root.children().slice(i).each(function() {
                     update_index($(this), i);
                     i++;
                 });
@@ -215,8 +239,7 @@ jQuery.fn.extend({
                             var $otherBtnAdd = $(settings.other_btn_add)
                         else if (settings.other_btn_add instanceof jQuery)
                             var $otherBtnAdd = settings.other_btn_add;
-                        else
-                        {
+                        else {
                             console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
                             break;
                         }
@@ -226,5 +249,5 @@ jQuery.fn.extend({
                     }
             }
         });
-    }
-});
+    };
+}));
