@@ -47,7 +47,7 @@ var defaults =  {
         btn_delete_selector:    '.collection-delete',
         btn_up_selector:        '.collection-up',
         btn_down_selector:      '.collection-down'
-        prototype_name_alias:      '__AttrName__',
+        prototype_name_alias:   '__AttrName__',
         prototype_name:         '__name__'
     };
 ~~~~
