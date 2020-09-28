@@ -28,7 +28,7 @@
     $.fn.formCollection = function(options, param) {
         var settings;
         var selector = this.selector;
-        var dataKey = 'collectionData';
+        var eventPrototypeModified = 'prototypeModified';
 
         if (options === undefined || typeof options === 'object') {
             var defaults = {
@@ -51,7 +51,6 @@
                 btn_delete_selector: '.collection-delete',
                 btn_up_selector: '.collection-up',
                 btn_down_selector: '.collection-down',
-                prototype_name_alias: '__AttrName__',
                 prototype_name: '__name__'
             };
             settings = $.extend(true, {}, defaults, options);
@@ -72,11 +71,72 @@
             var settings = globalSettings[selector];
         }
         return $(this).each(function() {
-            var prototype = $(this).data('prototype');
-            var n = $(this).children().length;
-            var $collection_root = $(this);
+            var prototype               = $(this).data('prototype');
+            var n                       = $(this).children().length;
+            var $collection_root        = $(this);
+            var needed_data_for_update  = [];
 
-            var init_elem = function($elem) {
+            /* triggered by a parent collection if this collection is a subcollection */
+            $collection_root.on(eventPrototypeModified, function(e){
+                if (e.target !== e.currentTarget) // we don't want a parent collection to get events of subcollections
+                    return;
+                needed_data_for_update  = [];
+                prototype               = $(this).attr('data-prototype'); // not data() ! it doesn't recheck this attribute
+                init_needed_data_for_update();
+                update_indexes_from(0);
+            });
+
+            var build_node_needed_data_for_update = function(path, attributes) {
+                var obj = {
+                    path:       path,
+                    attributes: attributes
+                };
+                return obj;
+            }
+
+            /*
+             *
+             * Example of result for needed_data_for_update:
+             * [
+             *      {
+             *          path: [],
+             *          attributes: [
+             *                          name:   'address[__name__]',
+             *                          id:     'address___name__',
+             *                      ]
+             *      },
+             *      {
+             *          path: [1, 2, 1],
+             *          attributes: [
+             *                          name:   'address_checbok[__name__]',
+             *                          id:     'address_checkbox___name__',
+             *                      ]
+             *      },
+             * ]
+             */
+            var inspect_model_tree = function($modelNode, currentPath) {
+                /* First the root, simple (if it's a wrapper there should be nothing, but it can be an input too) */
+                var attrs = getAttributesWithThisValue($modelNode, settings.prototype_name); // get attributes with placeholders
+                if (!$.isEmptyObject(attrs)) {
+                    /* the path is an empty array for the root node */
+                    needed_data_for_update.push(build_node_needed_data_for_update(currentPath, attrs));
+                }
+                if ('data-prototype' in attrs) // if the current node is a subcollection
+                    return; // no need to dig in its childs, it will be handled separately
+                /* Then we need to traverse */
+                var $modelNodeChilds = $modelNode.children();
+                for (var i = 0; i < $modelNodeChilds.length; i++) {
+                    inspect_model_tree($modelNodeChilds.eq(i), currentPath.concat([i]));//concat creates a new array
+                };
+            };
+
+            var init_needed_data_for_update = function() {
+                var $modelElement = $(prototype);
+
+                inspect_model_tree($modelElement, []);
+            };
+
+            var init_elem_listeners = function($elem) {
                 $elem.find(settings.btn_add_selector).click(function() {
                     var $new_elem = add_elem_down($elem);
                     settings.post_add($new_elem, false);
@@ -101,42 +161,28 @@
 
             var getAttributesWithThisValue = function($elem, value) {
                 var result = {};
-                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 $.each($elem[0].attributes, function() {
                     if (this.value && this.value.indexOf(value) !== -1) {
-                        result[this.name] = this.value.replace(prototypeNameRegexp, settings.prototype_name_alias);
+                        result[this.name] = this.value;
                     }
                 });
                 return result;
             };
 
-            var mark_elem_nodes = function($elem) {
-                var attrs = getAttributesWithThisValue($elem, settings.prototype_name);
-                if (!$.isEmptyObject(attrs))
-                    $elem.attr('data-' + dataKey, JSON.stringify(attrs));
-                $elem.find('[id*="' + settings.prototype_name + '"], [name*="' + settings.prototype_name + '"], [for*="' + settings.prototype_name + '"]').each(function() {
-                    attrs = getAttributesWithThisValue($(this), settings.prototype_name);
-                    if (!$.isEmptyObject(attrs))
-                        $(this).attr('data-' + dataKey, JSON.stringify(attrs));
-                });
-
-                return $elem;
-            };
-
             var update_index = function($elem, index) {
-                var attrsToUpdate = $elem.attr('data-' + dataKey);
-                attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
-                $.each(attrsToUpdate, function(name, value) {
-                    $elem.attr(name, value.replace(settings.prototype_name_alias, index));
-                });
-                $elem.find('[data-' + dataKey + ']').each(function() {
-                    $node = $(this);
-                    attrs = getAttributesWithThisValue($node, settings.prototype_name);
-                    attrsToUpdate = $node.attr('data-' + dataKey);
-                    attrsToUpdate = attrsToUpdate ? JSON.parse(attrsToUpdate) : null;
-                    $.each(attrsToUpdate, function(name, value) {
-                        $node.attr(name, value.replace(settings.prototype_name_alias, index));
+                /* without regexp, replace only replaces the first occurrence */
+                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
+                $.each(needed_data_for_update, function(i, nodeData) {
+                    var $node = $elem;
+                    $.each(nodeData.path, function(j, childIndex) { // we follow the path
+                        $node = $node.children().eq(childIndex);
                     });
+                    //now we have the right node
+                    $.each(nodeData.attributes, function(name, value) { //value has a placeholder
+                        $node.attr(name, value.replace(prototypeNameRegexp, index));
+                    });
+                    if ('data-prototype' in $node[0].attributes) // if this node is a subcollection container
+                        $node.trigger(eventPrototypeModified);
                 });
             };
 
@@ -151,13 +197,12 @@
             var create_elem = function(index) {
                 if (index === undefined)
                     index = n;
-                var newFormHtml = prototype;
-                var $newForm = mark_elem_nodes($(newFormHtml));
+                var newFormHtml = prototype; // we create an elem with the prototype, but placeholders must be replaced
                 var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 //won't replace the ones in data since we put an alias
-                newFormHtml = $newForm[0].outerHTML.replace(prototypeNameRegexp, index);
+                newFormHtml = newFormHtml.replace(prototypeNameRegexp, index);
                 $newForm = $(newFormHtml);
-                init_elem($newForm);
+                init_elem_listeners($newForm);
                 return $newForm;
             };
 
@@ -225,15 +270,22 @@
                     update_indexes_from(param);
                     break;
                 default:
+
                     var init_existing = function() {
+                        /*
+                         * the existing nodes have no placeholders. but we need it to update it.
+                         * we need a model to save the attributes formats with placeholdes in the target element
+                         */
+                        var $modelElement = $(prototype);
                         $collection_root.children().each(function() {
-                            init_elem($(this));
+                            init_elem_listeners($(this));
                             if (settings.call_post_add_on_init)
                                 settings.post_add($(this), true);
                         });
                     };
 
                     init_existing();
+                    init_needed_data_for_update();
                     if (settings.other_btn_add) {
                         if (typeof settings.other_btn_add === 'string')
                             var $otherBtnAdd = $(settings.other_btn_add)
