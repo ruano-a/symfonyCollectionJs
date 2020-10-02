@@ -38,8 +38,8 @@ $('.collection').formCollection();
 var defaults =  {
         max_elems:              100,
         call_post_add_on_init:  false,
-        post_add:               function($new_elem, is_init) { return true; },
-        post_delete:            function($delete_elem) { return true; },
+        post_add:               function($new_elem, context) { return true; },
+        post_delete:            function($delete_elem, context) { return true; },
         post_up:                function($elem, $switched_elem) { return true; },
         post_down:              function($elem, $switched_elem) { return true; },
         other_btn_add:          null,
@@ -62,14 +62,28 @@ Add an empty element:
 $('.collection').formCollection('add');
 ~~~~
 
-Remove an element with its index (starting from 0):
+Delete an element with its index (starting from 0):
 ~~~~
-$('.collection').formCollection('remove', 2);
+$('.collection').formCollection('delete', 2);
 ~~~~
 
-Clear every element:
+Clear every element (doesn't call post_delete):
 ~~~~
 $('.collection').formCollection('clear');
+~~~~
+
+The context argument in post_add and post_delete will have of this values, depending on how it's called:
+~~~~
+$.fn.formCollection.POST_ADD_CONTEXT = {
+    BTN_ADD:        4,
+    OTHER_BTN_ADD:  8,
+    INIT:           15,
+    ADD_METHOD:     16
+};
+$.fn.formCollection.POST_DELETE_CONTEXT = {
+    BTN_DELETE:     23,
+    DELETE_METHOD:  42
+};
 ~~~~
 
 # Requirement
