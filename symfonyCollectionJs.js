@@ -34,10 +34,10 @@
             var defaults = {
                 max_elems: 100,
                 call_post_add_on_init: false,
-                post_add: function($new_elem, is_init) {
+                post_add: function($new_elem, context) {
                     return true;
                 },
-                post_delete: function($delete_elem) {
+                post_delete: function($delete_elem, context) {
                     return true;
                 },
                 post_up: function($elem, $switched_elem) {
@@ -58,10 +58,10 @@
                 globalSettings = {};
             globalSettings[selector] = settings; // to make them accessible on another call
         } else if (typeof options === 'string') {
-            if ($.inArray(options, ['add', 'remove', 'clear']) === -1) {
+            if ($.inArray(options, ['add', 'delete', 'clear']) === -1) {
                 console.log('Invalid options');
                 return false;
-            } else if (options === 'remove' && param === undefined) {
+            } else if (options === 'delete' && param === undefined) {
                 console.log('Missing index');
                 return false;
             } else if (typeof globalSettings == 'undefined' || globalSettings[selector] === undefined) {
@@ -139,11 +139,11 @@
             var init_elem_listeners = function($elem) {
                 $elem.find(settings.btn_add_selector).click(function() {
                     var $new_elem = add_elem_down($elem);
-                    settings.post_add($new_elem, false);
+                    settings.post_add($new_elem, $.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD);
                 });
                 $elem.find(settings.btn_delete_selector).click(function() {
                     delete_elem($elem);
-                    settings.post_delete($elem);
+                    settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
                 });
                 $elem.find(settings.btn_up_selector).click(function() {
                     $switched_elem = move_elem_up($elem);
@@ -216,13 +216,13 @@
                 return $new_elem;
             };
 
-            var add_elem_bottom = function() {
+            var add_elem_bottom = function(context) {
                 if (n >= settings.max_elems)
                     return false;
                 var $new_elem = create_elem();
                 $collection_root.append($new_elem);
                 n++;
-                settings.post_add($new_elem, false);
+                settings.post_add($new_elem, context);
             };
 
             var delete_elem = function($elem) {
@@ -258,16 +258,16 @@
 
             switch (options) {
                 case 'add':
-                    add_elem_bottom();
+                    add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
                     break;
                 case 'clear':
                     $collection_root.empty();
                     n = 0;
                     break;
-                case 'remove':
-                    $collection_root.children().eq(param).remove();
-                    n--;
-                    update_indexes_from(param);
+                case 'delete':
+                    $elem = $collection_root.children().eq(param);
+                    delete_elem($elem);
+                    settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
                     break;
                 default:
 
@@ -280,7 +280,7 @@
                         $collection_root.children().each(function() {
                             init_elem_listeners($(this));
                             if (settings.call_post_add_on_init)
-                                settings.post_add($(this), true);
+                                settings.post_add($(this), $.fn.formCollection.POST_ADD_CONTEXT.INIT);
                         });
                     };
 
@@ -296,10 +296,20 @@
                             break;
                         }
                         $otherBtnAdd.click(function() {
-                            add_elem_bottom();
+                            add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
                         });
                     }
             }
         });
+    };
+    $.fn.formCollection.POST_ADD_CONTEXT = {
+        BTN_ADD:        4,
+        OTHER_BTN_ADD:  8,
+        INIT:           15,
+        ADD_METHOD:     16
+    };
+    $.fn.formCollection.POST_DELETE_CONTEXT = {
+        BTN_DELETE:     23,
+        DELETE_METHOD:  42
     };
 }));

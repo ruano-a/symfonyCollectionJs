@@ -114,11 +114,36 @@ function assertElementNHasTheseValues(assert, n, value1, value2)
 	assert.equal($inputs.eq(1).val(), value2);
 }
 
+function hasDuplicates(arr)
+{
+	return new Set(arr).size !== arr.length; 
+}
+
 /* Note : in assert.equal, the expected is the 2nd param */
 QUnit.module('Registration / initializing', function() {
  	QUnit.test('Registration', function( assert ) {
   		assert.ok($.fn.formCollection, 'registered as a jQuery plugin');
   	});
+
+    QUnit.test('are public enums set and correct', function(assert) {
+  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT, 'POST_ADD_CONTEXT enum is set');
+  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT, 'POST_DELETE_CONTEXT enum is set');
+  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD);
+  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
+  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.INIT);
+  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
+  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
+  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
+  		var values = [
+  			$.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD,
+  			$.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD,
+  			$.fn.formCollection.POST_ADD_CONTEXT.INIT,
+  			$.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD,
+  			$.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE,
+  			$.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD
+  		];
+  		assert.false(hasDuplicates(values));
+    });
 
     QUnit.test('initializing the collection should not alter the page', function(assert) {
     	var $page = $('html');
@@ -283,17 +308,20 @@ QUnit.module('Move down', function() {
  });
 
 QUnit.module('post_add', function() {
-    QUnit.test('post_add is triggered after clicking on other_btn_add and btn_add_selector', function(assert) {
+    QUnit.test('post_add is triggered after clicking on other_btn_add, btn_add_selector, and with the add method', function(assert) {
     	var test = false;
     	initSimpleCollection(false, function() {
     		test = true;
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
     	$('#collection-add-btn').click(); // other_btn_add
-    	assert.true(test);
+    	assert.true(test, 'post_add called after click on other_btn_add');
     	test = false; // reset
     	$('.collection-elem-add').eq(0).click(); // btn_add_selector
-    	assert.true(test);
+    	assert.true(test, 'post_add called after click on btn_add_selector');
+    	test = false; // reset
+    	$('#collection-root').formCollection('add'); // add method
+    	assert.true(test, 'post_add called after calling the add method');
     });
 
     QUnit.test('post_add is not triggered during init if call_post_add_on_init is false', function(assert) {
@@ -315,4 +343,57 @@ QUnit.module('post_add', function() {
     	});
     	assert.true(test); // the callback should have been called
     });
+
+    QUnit.test('the post_add context should have the right value', function(assert) {
+    	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
+    	$('#collection-root').append(guessCollectionElementResult(1));
+    	var test = false;
+    	initSimpleCollection(true, function($new_elem, context) {
+    		test = context;
+    	});
+    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.INIT, 'correct context on init');
+    	test = false; // reset
+    	$('#collection-add-btn').click(); //other_btn_add
+    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD, 'correct context on other_btn_add');
+    	test = false; // reset
+    	$('.collection-elem-add').eq(0).click(); //btn_add_selector
+    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD, 'correct context on btn_add_selector');
+    	test = false; // reset
+    	$('#collection-root').formCollection('add');
+    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD, 'correct context with add method');
+    });
  });
+
+QUnit.module('post_remove', function() {
+    QUnit.test('post_remove is triggered after clicking on btn_delete_selector and with the remove method', function(assert) {
+    	var test = false;
+    	initSimpleCollection(false, null, function() {
+    		test = true;
+    	});
+    	assert.false(test); // to check that the callback isn't triggered without reason
+    	$('#collection-add-btn').click();
+    	$('.collection-elem-add').eq(0).click();
+    	// now we have 2 elements
+    	$('.collection-elem-remove').eq(0).click(); // btn_delete_selector
+    	assert.true(test, 'post_remove called after click on other_btn_add');
+    	test = false; // reset
+    	$('#collection-root').formCollection('delete', 0); // delete method
+    	assert.true(test, 'post_remove called after calling the remove method');
+    });
+
+    QUnit.test('the post_remove context has the right value', function(assert) {
+    	var test = false;
+    	initSimpleCollection(false, null, function($delete_elem, context) {
+    		test = context;
+    	});
+    	assert.false(test); // to check that the callback isn't triggered without reason
+    	$('#collection-add-btn').click();
+    	$('.collection-elem-add').eq(0).click();
+    	// now we have 2 elements
+    	$('.collection-elem-remove').eq(0).click(); // btn_delete_selector
+    	assert.equal(test, $.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE, 'correct context on btn_delete_selector');
+    	test = false; // reset
+    	$('#collection-root').formCollection('delete', 0); // delete method
+    	assert.equal(test, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, 'correct context on delete method');
+    });
+});
