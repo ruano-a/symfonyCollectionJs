@@ -1,27 +1,14 @@
-function initSimpleCollection(call_post_add_on_init, post_add, post_delete, post_up, post_down)
+function initSimpleCollection(additionalSettings)
 {
-	if (typeof post_add !== 'function')
-		post_add = function ($new_elem, is_init) { return true; };
-	if (typeof post_delete !== 'function')
-		post_delete = function ($delete_elem) { return true; };
-	if (typeof post_up !== 'function')
-		post_up = function ($elem, $switched_elem) { return true; };
-	if (typeof post_down !== 'function')
-		post_down = function ($elem, $switched_elem) { return true; };
-	if (typeof call_post_add_on_init === 'undefined')
-		call_post_add_on_init = false;
-	$('#collection-root').formCollection({
+	var settings = {
 		other_btn_add: 			'#collection-add-btn',
 		btn_add_selector: 		'.collection-elem-add',
 		btn_delete_selector: 	'.collection-elem-remove',
 		btn_up_selector: 		'.collection-elem-up',
 		btn_down_selector: 		'.collection-elem-down',
-		call_post_add_on_init: 	call_post_add_on_init,
-		post_add:         		post_add,
-		post_delete:         	post_delete,
-		post_up:         		post_up,
-		post_down:         		post_down
-	});
+	};
+	settings = $.extend(true, {}, settings, additionalSettings);
+	$('#collection-root').formCollection(settings);
 }
 
 function initTripleCollection()
@@ -310,8 +297,11 @@ QUnit.module('Move down', function() {
 QUnit.module('post_add', function() {
     QUnit.test('post_add is triggered after clicking on other_btn_add, btn_add_selector, and with the add method', function(assert) {
     	var test = false;
-    	initSimpleCollection(false, function() {
-    		test = true;
+    	initSimpleCollection({
+    		call_post_add_on_init: 	false,
+    		post_add: 				function() {
+    			test = true;
+    		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
     	$('#collection-add-btn').click(); // other_btn_add
@@ -328,8 +318,11 @@ QUnit.module('post_add', function() {
     	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
     	$('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
-    	initSimpleCollection(false, function() {
-    		test = true;
+    	initSimpleCollection({
+    		call_post_add_on_init: 	false,
+    		post_add: 				function() {
+    			test = true;
+    		}
     	});
     	assert.false(test); // the callback shouldn't have been called
     });
@@ -338,8 +331,11 @@ QUnit.module('post_add', function() {
     	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
     	$('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
-    	initSimpleCollection(true, function() {
-    		test = true;
+    	initSimpleCollection({
+    		call_post_add_on_init: 	true,
+    		post_add: 				function() {
+    			test = true;
+    		}
     	});
     	assert.true(test); // the callback should have been called
     });
@@ -348,8 +344,11 @@ QUnit.module('post_add', function() {
     	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
     	$('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
-    	initSimpleCollection(true, function($new_elem, context) {
-    		test = context;
+    	initSimpleCollection({
+    		call_post_add_on_init: 	true,
+    		post_add: 				function($new_elem, context) {
+    			test = context;
+    		}
     	});
     	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.INIT, 'correct context on init');
     	test = false; // reset
@@ -364,27 +363,31 @@ QUnit.module('post_add', function() {
     });
  });
 
-QUnit.module('post_remove', function() {
-    QUnit.test('post_remove is triggered after clicking on btn_delete_selector and with the remove method', function(assert) {
+QUnit.module('post_delete', function() {
+    QUnit.test('post_delete is triggered after clicking on btn_delete_selector and with the remove method', function(assert) {
     	var test = false;
-    	initSimpleCollection(false, null, function() {
-    		test = true;
+    	initSimpleCollection({
+    		post_delete: function() {
+    			test = true;
+    		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
     	$('#collection-add-btn').click();
     	$('.collection-elem-add').eq(0).click();
     	// now we have 2 elements
     	$('.collection-elem-remove').eq(0).click(); // btn_delete_selector
-    	assert.true(test, 'post_remove called after click on other_btn_add');
+    	assert.true(test, 'post_delete called after click on other_btn_add');
     	test = false; // reset
     	$('#collection-root').formCollection('delete', 0); // delete method
-    	assert.true(test, 'post_remove called after calling the remove method');
+    	assert.true(test, 'post_delete called after calling the remove method');
     });
 
-    QUnit.test('the post_remove context has the right value', function(assert) {
+    QUnit.test('the post_delete context has the right value', function(assert) {
     	var test = false;
-    	initSimpleCollection(false, null, function($delete_elem, context) {
-    		test = context;
+    	initSimpleCollection({
+    		post_delete: function($delete_elem, context) {
+    			test = context;
+    		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
     	$('#collection-add-btn').click();
@@ -395,5 +398,40 @@ QUnit.module('post_remove', function() {
     	test = false; // reset
     	$('#collection-root').formCollection('delete', 0); // delete method
     	assert.equal(test, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, 'correct context on delete method');
+    });
+});
+
+QUnit.module('max_elems', function() {
+    QUnit.test('max_elems should limit the number of child elements', function(assert) {
+    	initSimpleCollection({
+    		max_elems: 3
+    	});
+    	$('#collection-add-btn').click();
+    	$('#collection-add-btn').click();
+    	$('#collection-add-btn').click();
+    	$('#collection-add-btn').click();
+    	$('.collection-elem-add').eq(0).click();
+    	$('#collection-root').formCollection('add'); // add method
+    	assert.equal($('#collection-root').children().length, 3);
+    });
+});
+
+function guessCollectionPrototypeElementResult(index)
+{
+	return '<div class="collection-prototype-element">'
+        +'<textarea id="form_collection_'+index+'_firstblabla" name="form[collection]['+index+'][firstblabla]"></textarea>'
+        +'<textarea id="form_collection_'+index+'_secondblabla" name="form[collection]['+index+'][secondblabla]"></textarea>'
+    +'</div>';
+}
+
+/* Note : this is tested anyway with the triply nested collection, but a bonus separate test is always better*/
+QUnit.module('prototype_name', function() {
+    QUnit.test('prototype_name should allow to set a custom placeholder', function(assert) {
+		$('#collection-prototype-root').formCollection({
+			other_btn_add: 	'#collection-prototype-add-btn',
+			prototype_name: '__customproto__'
+		});
+    	$('#collection-prototype-add-btn').click();
+    	assert.equal(removeSpacesBetweenTags($('#collection-prototype-root').html()).trim(), guessCollectionPrototypeElementResult(0));
     });
 });
