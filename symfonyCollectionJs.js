@@ -28,7 +28,10 @@
     $.fn.formCollection = function(options, param) {
         var settings;
         var selector = this.selector;
-        var eventPrototypeModified = 'prototypeModified';
+        var eventPrototypeModified  = 'prototypeModified';
+        var eventAddMethodCalled    = 'addMethodCalled';
+        var eventDeleteMethodCalled = 'deleteMethodCalled';
+        var eventClearMethodCalled  = 'clearMethodCalled';
 
         if (options === undefined || typeof options === 'object') {
             var defaults = {
@@ -54,9 +57,6 @@
                 prototype_name: '__name__'
             };
             settings = $.extend(true, {}, defaults, options);
-            if (typeof globalSettings == 'undefined')
-                globalSettings = {};
-            globalSettings[selector] = settings; // to make them accessible on another call
         } else if (typeof options === 'string') {
             if ($.inArray(options, ['add', 'delete', 'clear']) === -1) {
                 console.log('Invalid options');
@@ -64,16 +64,27 @@
             } else if (options === 'delete' && param === undefined) {
                 console.log('Missing index');
                 return false;
-            } else if (typeof globalSettings == 'undefined' || globalSettings[selector] === undefined) {
-                console.log('Element not initialized');
-                return false;
             }
-            var settings = globalSettings[selector];
         }
         return $(this).each(function() {
+            var $collection_root        = $(this);
+
+            switch (options) { // particular case, so it's better to have it at the top and forget it
+                case 'add':
+                    $collection_root.trigger(eventAddMethodCalled);
+                    return;
+                    break;
+                case 'clear':
+                    $collection_root.trigger(eventDeleteMethodCalled);
+                    return;
+                    break;
+                case 'delete':
+                    $collection_root.trigger(eventClearMethodCalled);
+                    return;
+                    break;
+            }
             var prototype               = $(this).data('prototype');
             var n                       = $(this).children().length;
-            var $collection_root        = $(this);
             var needed_data_for_update  = [];
 
             /* triggered by a parent collection if this collection is a subcollection */
@@ -84,6 +95,25 @@
                 prototype               = $(this).attr('data-prototype'); // not data() ! it doesn't recheck this attribute
                 init_needed_data_for_update();
                 update_indexes_from(0);
+            });
+
+            /* 
+             * the listener way below is a trick to allow a second call to formCollection to access the same
+             * data (elements, options)
+             */
+            $collection_root.on(eventAddMethodCalled, function(e){
+                add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
+            });
+
+            $collection_root.on(eventDeleteMethodCalled, function(e){
+                $collection_root.empty();
+                n = 0;
+            });
+
+            $collection_root.on(eventClearMethodCalled, function(e){
+                $elem = $collection_root.children().eq(param);
+                delete_elem($elem);
+                settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
             });
 
             var build_node_needed_data_for_update = function(path, attributes) {
@@ -258,16 +288,13 @@
 
             switch (options) {
                 case 'add':
-                    add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
+                    $collection_root.trigger(eventAddMethodCalled);
                     break;
                 case 'clear':
-                    $collection_root.empty();
-                    n = 0;
+                    $collection_root.trigger(eventDeleteMethodCalled);
                     break;
                 case 'delete':
-                    $elem = $collection_root.children().eq(param);
-                    delete_elem($elem);
-                    settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
+                    $collection_root.trigger(eventClearMethodCalled);
                     break;
                 default:
 
@@ -287,17 +314,20 @@
                     init_existing();
                     init_needed_data_for_update();
                     if (settings.other_btn_add) {
+                        var $otherBtnAdd = null;
                         if (typeof settings.other_btn_add === 'string')
-                            var $otherBtnAdd = $(settings.other_btn_add)
+                            $otherBtnAdd = $(settings.other_btn_add)
                         else if (settings.other_btn_add instanceof jQuery)
-                            var $otherBtnAdd = settings.other_btn_add;
+                            $otherBtnAdd = settings.other_btn_add;
                         else {
                             console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
                             break;
                         }
-                        $otherBtnAdd.click(function() {
-                            add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
-                        });
+                        if ($otherBtnAdd) {
+                            $otherBtnAdd.click(function() {
+                                add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
+                            });
+                        }
                     }
             }
         });
