@@ -74,11 +74,11 @@
                     $collection_root.trigger(eventAddMethodCalled);
                     return;
                     break;
-                case 'clear':
-                    $collection_root.trigger(eventDeleteMethodCalled);
+                case 'delete':
+                    $collection_root.trigger(eventDeleteMethodCalled, [param]);
                     return;
                     break;
-                case 'delete':
+                case 'clear':
                     $collection_root.trigger(eventClearMethodCalled);
                     return;
                     break;
@@ -105,15 +105,15 @@
                 add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
             });
 
-            $collection_root.on(eventDeleteMethodCalled, function(e){
-                $collection_root.empty();
-                n = 0;
-            });
-
-            $collection_root.on(eventClearMethodCalled, function(e){
+            $collection_root.on(eventDeleteMethodCalled, function(em, param){
                 $elem = $collection_root.children().eq(param);
                 delete_elem($elem);
                 settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
+            });
+
+            $collection_root.on(eventClearMethodCalled, function(e){
+                $collection_root.empty();
+                n = 0;
             });
 
             var build_node_needed_data_for_update = function(path, attributes) {
