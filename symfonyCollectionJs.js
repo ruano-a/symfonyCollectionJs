@@ -286,49 +286,35 @@
                 return $next;
             };
 
-            switch (options) {
-                case 'add':
-                    $collection_root.trigger(eventAddMethodCalled);
-                    break;
-                case 'clear':
-                    $collection_root.trigger(eventDeleteMethodCalled);
-                    break;
-                case 'delete':
-                    $collection_root.trigger(eventClearMethodCalled);
-                    break;
-                default:
+            var init_existing = function() {
+                /*
+                 * the existing nodes have no placeholders. but we need it to update it.
+                 * we need a model to save the attributes formats with placeholdes in the target element
+                 */
+                var $modelElement = $(prototype);
+                $collection_root.children().each(function() {
+                    init_elem_listeners($(this));
+                    if (settings.call_post_add_on_init)
+                        settings.post_add($(this), $.fn.formCollection.POST_ADD_CONTEXT.INIT);
+                });
+            };
 
-                    var init_existing = function() {
-                        /*
-                         * the existing nodes have no placeholders. but we need it to update it.
-                         * we need a model to save the attributes formats with placeholdes in the target element
-                         */
-                        var $modelElement = $(prototype);
-                        $collection_root.children().each(function() {
-                            init_elem_listeners($(this));
-                            if (settings.call_post_add_on_init)
-                                settings.post_add($(this), $.fn.formCollection.POST_ADD_CONTEXT.INIT);
-                        });
-                    };
-
-                    init_existing();
-                    init_needed_data_for_update();
-                    if (settings.other_btn_add) {
-                        var $otherBtnAdd = null;
-                        if (typeof settings.other_btn_add === 'string')
-                            $otherBtnAdd = $(settings.other_btn_add)
-                        else if (settings.other_btn_add instanceof jQuery)
-                            $otherBtnAdd = settings.other_btn_add;
-                        else {
-                            console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
-                            break;
-                        }
-                        if ($otherBtnAdd) {
-                            $otherBtnAdd.click(function() {
-                                add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
-                            });
-                        }
-                    }
+            init_existing();
+            init_needed_data_for_update();
+            if (settings.other_btn_add) {
+                var $otherBtnAdd = null;
+                if (typeof settings.other_btn_add === 'string')
+                    $otherBtnAdd = $(settings.other_btn_add)
+                else if (settings.other_btn_add instanceof jQuery)
+                    $otherBtnAdd = settings.other_btn_add;
+                else {
+                    console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
+                }
+                if ($otherBtnAdd) {
+                    $otherBtnAdd.click(function() {
+                        add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
+                    });
+                }
             }
         });
     };
