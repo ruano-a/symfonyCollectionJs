@@ -143,9 +143,26 @@ function removeSpacesBetweenTags(str)
  */
 function fillElementN(n, value1, value2)
 {
-	$inputs = $('.collection-elem').eq(n).find('input');
+	$inputs = $('.collection-elem:nth-child('+(n + 1)+') input');
 	$inputs.eq(0).val(value1);
 	$inputs.eq(1).val(value2);
+}
+
+/* date in format YYYY-MM-DD */
+function fillSubElementN(n, subN, date1, date2)
+{
+	$inputs = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
+	$inputs.eq(0).val(date1);
+	$inputs.eq(1).val(date2);
+}
+
+/* date in format YYYY-MM-DD */
+function fillSubSubElementN(n, subN, subSubN, value1, value2)
+{
+	$textareas = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
+		') .sub-sub-collection-elem:nth-child('+(subSubN + 1)+') textarea');
+	$textareas.eq(0).val(value1);
+	$textareas.eq(1).val(value2);
 }
 
 /*
@@ -154,9 +171,32 @@ function fillElementN(n, value1, value2)
  */
 function assertElementNHasTheseValues(assert, n, value1, value2)
 {
-	$inputs = $('.collection-elem').eq(n).find('input');
+	$inputs = $('.collection-elem:nth-child('+(n + 1)+') input');
 	assert.equal($inputs.eq(0).val(), value1);
 	assert.equal($inputs.eq(1).val(), value2);
+}
+
+/*
+ * for the elements of the first collection
+ * not modifying the subelements
+ */
+function assertSubElementNHasTheseValues(assert, n, subN, date1, date2)
+{
+	$inputs = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
+	assert.equal($inputs.eq(0).val(), date1);
+	assert.equal($inputs.eq(1).val(), date2);
+}
+
+/*
+ * for the elements of the first collection
+ * not modifying the subelements
+ */
+function assertSubSubElementNHasTheseValues(assert, n, subN, subsubN, value1, value2)
+{
+	$textareas = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
+		') .sub-sub-collection-elem:nth-child('+(subsubN + 1)+') textarea');
+	assert.equal($textareas.eq(0).val(), value1);
+	assert.equal($textareas.eq(1).val(), value2);
 }
 
 function hasDuplicates(arr)
@@ -196,7 +236,7 @@ QUnit.module('Registration / initializing', function() {
     	initTripleCollection();
       	assert.equal($page.prop('outerHTML'), htmlBefore);
     });
- });
+});
 
 QUnit.module('Side add btn', function() {
     QUnit.test('other_btn_add should add an element on click', function(assert) {
@@ -212,7 +252,7 @@ QUnit.module('Side add btn', function() {
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
- });
+});
 
 QUnit.module('Add down', function() {
     QUnit.test('btn_add_selector should add an element on click after the element with the button', function(assert) {
@@ -240,7 +280,7 @@ QUnit.module('Add down', function() {
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
- });
+});
 
 QUnit.module('Removal', function() {
     QUnit.test('btn_delete_selector should remove an element on click', function(assert) {
@@ -650,6 +690,43 @@ function makeElementsTree(elementNumber, subElementsNumbers, subSubElementsNumbe
 	};
 }
 
+function fillElementNChildren(n, prefix, year)
+{
+    fillSubElementN(n, 0, year+'-01-01', year+'-01-02');
+    fillSubSubElementN(n, 0, 0, prefix+'a', prefix+'a');
+   	fillSubSubElementN(n, 0, 1, prefix+'b', prefix+'b');
+   	fillSubSubElementN(n, 0, 2, prefix+'c', prefix+'c');
+
+    fillSubElementN(n, 1, year+'-02-01', year+'-02-02');
+   	fillSubSubElementN(n, 1, 0, prefix+'d', prefix+'d');
+   	fillSubSubElementN(n, 1, 1, prefix+'e', prefix+'e');
+   	fillSubSubElementN(n, 1, 2, prefix+'f', prefix+'f');
+
+   	fillSubElementN(n, 2, year+'-03-01', year+'-03-02');
+   	fillSubSubElementN(n, 2, 0, prefix+'g', prefix+'g');
+   	fillSubSubElementN(n, 2, 1, prefix+'h', prefix+'h');
+   	fillSubSubElementN(n, 2, 2, prefix+'i', prefix+'i');
+}
+
+/* values bases on the ones specified in fillElementNChildren */
+function assertElementNChildrenHaveTheseValues(assert, n, prefix, year)
+{
+	assertSubElementNHasTheseValues(assert, n, 0, year+'-01-01', year+'-01-02');
+	assertSubSubElementNHasTheseValues(assert, n, 0, 0, prefix+'a', prefix+'a');
+	assertSubSubElementNHasTheseValues(assert, n, 0, 1, prefix+'b', prefix+'b');
+	assertSubSubElementNHasTheseValues(assert, n, 0, 2, prefix+'c', prefix+'c');
+
+	assertSubElementNHasTheseValues(assert, n, 1, year+'-02-01', year+'-02-02');
+	assertSubSubElementNHasTheseValues(assert, n, 1, 0, prefix+'d', prefix+'d');
+	assertSubSubElementNHasTheseValues(assert, n, 1, 1, prefix+'e', prefix+'e');
+	assertSubSubElementNHasTheseValues(assert, n, 1, 2, prefix+'f', prefix+'f');
+
+	assertSubElementNHasTheseValues(assert, n, 2, year+'-03-01', year+'-03-02');
+	assertSubSubElementNHasTheseValues(assert, n, 2, 0, prefix+'g', prefix+'g');
+	assertSubSubElementNHasTheseValues(assert, n, 2, 1, prefix+'h', prefix+'h');
+	assertSubSubElementNHasTheseValues(assert, n, 2, 2, prefix+'i', prefix+'i');
+}
+
 /* comparing the whole collections html is strict and hard to maintain, but it avoid bad surprises */
 QUnit.module('collection nesting (3 levels)', function() {
     QUnit.test('a triply nested collection with correct parameters should have the right result', function(assert) {
@@ -661,14 +738,67 @@ QUnit.module('collection nesting (3 levels)', function() {
       	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
 	});
 
-    QUnit.test('attributes of sub and sub sub elements should be updated after adding an element', function(assert) {
+    QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after adding an element', function(assert) {
 		initTripleCollection();
     	makeElementsTree(3, 3, 3);
+    	
+    	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
+    	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
     	$('.collection-elem-add').eq(1).click(); // add an element between the 1 and the 2
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3])
     							+ guessCollectionElementResult(2) // the added element
     							+ guessCollectionElementResult(3, [3, 3, 3]);
+    	assertElementNChildrenHaveTheseValues(assert, 1, '1', '2000');
+    	assert.equal($('.collection-elem-add:nth-child(3) .sub-collection-elem').length, 0); // the added elem has no children
+    	assertElementNChildrenHaveTheseValues(assert, 3, '2', '2001');
+      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+	});
+
+    QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after removing an element', function(assert) {
+		initTripleCollection();
+    	makeElementsTree(3, 3, 3);
+    	fillElementNChildren(0, '0', '2000'); // we fill sub elements and sub sub elements in the element 0
+    	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
+    	$('.collection-elem-remove').eq(1).click(); // remove the second element
+    	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
+    							+ guessCollectionElementResult(1, [3, 3, 3]);
+    	assertElementNChildrenHaveTheseValues(assert, 0, '0', '2000');
+    	assertElementNChildrenHaveTheseValues(assert, 1, '2', '2001');
+      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+	});
+
+    QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after moving an element up', function(assert) {
+		initTripleCollection();
+    	makeElementsTree(3, 3, 3);
+    	
+    	fillElementNChildren(0, '0', '1999'); // we fill sub elements and sub sub elements in the element 0
+    	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
+    	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
+    	$('.collection-elem-up').eq(1).click(); // move the middle element up
+    	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
+    							+ guessCollectionElementResult(1, [3, 3, 3])
+    							+ guessCollectionElementResult(2, [3, 3, 3]);
+    	assertElementNChildrenHaveTheseValues(assert, 0, '1', '2000');
+    	assertElementNChildrenHaveTheseValues(assert, 1, '0', '1999');
+    	assertElementNChildrenHaveTheseValues(assert, 2, '2', '2001');
+      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+	});
+
+    QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after moving an element down', function(assert) {
+		initTripleCollection();
+    	makeElementsTree(3, 3, 3);
+    	
+    	fillElementNChildren(0, '0', '1999'); // we fill sub elements and sub sub elements in the element 0
+    	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
+    	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
+    	$('.collection-elem-down').eq(1).click(); // move the middle element up
+    	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
+    							+ guessCollectionElementResult(1, [3, 3, 3])
+    							+ guessCollectionElementResult(2, [3, 3, 3]);
+    	assertElementNChildrenHaveTheseValues(assert, 0, '0', '1999');
+    	assertElementNChildrenHaveTheseValues(assert, 1, '2', '2001');
+    	assertElementNChildrenHaveTheseValues(assert, 2, '1', '2000');
       	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
 	});
 });
