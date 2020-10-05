@@ -104,6 +104,7 @@ Yes ! in example/triply_nested_collection.html
 Symfony (2 or more) 
 Jquery (1.12.4 or more should be fine, unclear)
 
-# Note
+# Notes
 This should theoretically work with unlimited nested collection. However if you encounter an issue, let me know.
+Don't hesitate to let me know if you're using this plugin, I'm super interested !
 For advances features, you should use the plugin of ninsuo.
