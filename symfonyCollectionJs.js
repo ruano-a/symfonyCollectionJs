@@ -27,11 +27,12 @@
 }(function($) {
     $.fn.formCollection = function(options, param) {
         var settings;
-        var selector = this.selector;
-        var eventPrototypeModified  = 'prototypeModified';
-        var eventAddMethodCalled    = 'addMethodCalled';
-        var eventDeleteMethodCalled = 'deleteMethodCalled';
-        var eventClearMethodCalled  = 'clearMethodCalled';
+        var selector                            = this.selector;
+        var eventPrototypeModified              = 'prototypeModified';
+        var eventAddMethodCalled                = 'addMethodCalled';
+        var eventDeleteMethodCalled             = 'deleteMethodCalled';
+        var eventClearMethodCalled              = 'clearMethodCalled';
+        var eventRefreshAttributesMethodCalled  = 'refreshAttributesMethodCalled';
 
         if (options === undefined || typeof options === 'object') {
             var defaults = {
@@ -58,7 +59,7 @@
             };
             settings = $.extend(true, {}, defaults, options);
         } else if (typeof options === 'string') {
-            if ($.inArray(options, ['add', 'delete', 'clear']) === -1) {
+            if ($.inArray(options, ['add', 'delete', 'clear', 'refreshAttributes']) === -1) {
                 console.log('Invalid options');
                 return false;
             } else if (options === 'delete' && param === undefined) {
@@ -80,6 +81,10 @@
                     break;
                 case 'clear':
                     $collection_root.trigger(eventClearMethodCalled);
+                    return;
+                    break;
+                case 'refreshAttributes':
+                    $collection_root.trigger(eventRefreshAttributesMethodCalled, [param]);
                     return;
                     break;
             }
@@ -105,7 +110,7 @@
                 add_elem_bottom($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
             });
 
-            $collection_root.on(eventDeleteMethodCalled, function(em, param){
+            $collection_root.on(eventDeleteMethodCalled, function(e, param){
                 $elem = $collection_root.children().eq(param);
                 delete_elem($elem);
                 settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
@@ -114,6 +119,10 @@
             $collection_root.on(eventClearMethodCalled, function(e){
                 $collection_root.empty();
                 n = 0;
+            });
+
+            $collection_root.on(eventRefreshAttributesMethodCalled, function(e, param){
+                update_indexes_from(param);
             });
 
             var build_node_needed_data_for_update = function(path, attributes) {

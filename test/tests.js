@@ -677,6 +677,61 @@ QUnit.module('The method clear (.formCollection(\'clear\'))', function() {
     // nothing to test related to params
 });
 
+/*
+ * Note about nth-child:
+ * .collection-elem:nth-child(1) input:nth-child(1) can't work because it doesn't look for the first input
+ * in the collection-elem, it looks for the elem that is the first child of collection-elem and is an input,
+ * which doesn't exist since the first child is an h2. nth-of-type does what we want here.
+ */
+QUnit.module('The method refreshAttributes (.formCollection(\'refreshAttributes\', from))', function() {
+    QUnit.test('The method refreshAttributes should refresh the attributes with placeholder from the given index', function(assert) {
+    	initTripleCollection();
+    	$('#collection-add-btn').click();
+    	$('.collection-elem-add').eq(0).click();
+    	$('.collection-elem-add').eq(0).click(); // 3 elements
+      	assert.equal($('.collection-elem').length, 3); // just in case
+      	$('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+      	$('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
+      	$('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
+      	// the first element shouldn't be affected since we refresh from the second
+      	var firstElemHtml = removeSpacesBetweenTags($('.collection-elem:nth-child(1)').prop('outerHTML')).trim();
+      	assert.notEqual(firstElemHtml, guessCollectionElementResult(0)); // just in case
+      	$('#collection-root').formCollection('refreshAttributes', 1); // we refresh attributes from the second
+      	var expected = firstElemHtml + guessCollectionElementResult(1) + guessCollectionElementResult(2);
+      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expected);
+    });
+
+    QUnit.test('The method refreshAttributes should refresh the attributes with placeholder of sub collections too', function(assert) {
+    	initTripleCollection();
+    	$('#collection-add-btn').click();
+    	$('.sub-collection-add-btn').eq(0).click();
+    	$('.sub-sub-collection-add-btn').eq(0).click(); // 1 elem with a sub elem with a sub sub elem
+      	$('textarea:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+      	// the first element shouldn't be affected since we refresh from the second
+      	var subsubElemHtml = removeSpacesBetweenTags($('.sub-sub-collection-elem').prop('outerHTML')).trim();
+      	assert.notEqual(subsubElemHtml, guessCollectionSubSubElementResult(0, 0, 0)); // just in case
+      	$('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes from the first
+      	var expected = guessCollectionElementResult(0, [1]);
+      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expected);
+    });
+
+    QUnit.test('The method refreshAttributes should not modify the rest of the page', function(assert) {
+    	initTripleCollection();
+    	var htmlBefore = $('html').prop('outerHTML');
+    	$('#collection-add-btn').click();
+    	$('.collection-elem-add').eq(0).click();
+    	$('.collection-elem-add').eq(0).click(); // 3 elements 
+      	$('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+      	$('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
+      	$('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
+      	$('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes of each elem
+    	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
+      	assert.equal(htmlWithoutCollectionContent, htmlBefore);
+    });
+
+    // nothing to test related to params
+});
+
 function makeElementsTree(elementNumber, subElementsNumbers, subSubElementsNumbers)
 {
 	for (var i = 0; i < elementNumber; i++) {

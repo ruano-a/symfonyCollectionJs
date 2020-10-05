@@ -72,6 +72,11 @@ Clear every element (doesn't call post_delete):
 $('.collection').formCollection('clear');
 ~~~~
 
+Refresh the attributes of every elements from the index given (starting from 0). You might need this in specific cases, such as with drag and drop:
+~~~~
+$('.collection').formCollection('refreshAttributes', 0);
+~~~~
+
 The context argument in post_add and post_delete will have of this values, depending on how it's called:
 ~~~~
 $.fn.formCollection.POST_ADD_CONTEXT = {
