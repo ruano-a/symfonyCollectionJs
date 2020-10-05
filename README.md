@@ -86,6 +86,14 @@ $.fn.formCollection.POST_DELETE_CONTEXT = {
 };
 ~~~~
 
+# how to start the tests
+
+Just open the page index.html in the test folder. It starts the tests on opening.
+
+# any advanced example ?
+
+Yes ! in example/triply_nested_collection.html
+
 # Requirement
 
 Symfony (2 or more) 
