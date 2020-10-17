@@ -27,7 +27,6 @@
 }(function($) {
     $.fn.formCollection = function(options, param) {
         var settings;
-        var selector                            = this.selector;
         var eventPrototypeModified              = 'prototypeModified';
         var eventAddMethodCalled                = 'addMethodCalled';
         var eventDeleteMethodCalled             = 'deleteMethodCalled';
@@ -111,7 +110,7 @@
             });
 
             $collection_root.on(eventDeleteMethodCalled, function(e, param){
-                $elem = $collection_root.children().eq(param);
+                var $elem = $collection_root.children().eq(param);
                 delete_elem($elem);
                 settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
             });
@@ -131,7 +130,7 @@
                     attributes: attributes
                 };
                 return obj;
-            }
+            };
 
             /*
              *
@@ -166,7 +165,7 @@
                 var $modelNodeChilds = $modelNode.children();
                 for (var i = 0; i < $modelNodeChilds.length; i++) {
                     inspect_model_tree($modelNodeChilds.eq(i), currentPath.concat([i]));//concat creates a new array
-                };
+                }
             };
 
             var init_needed_data_for_update = function() {
@@ -185,13 +184,13 @@
                     settings.post_delete($elem, $.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
                 });
                 $elem.find(settings.btn_up_selector).click(function() {
-                    $switched_elem = move_elem_up($elem);
+                    var $switched_elem = move_elem_up($elem);
                     if ($switched_elem) {
                         settings.post_up($elem, $switched_elem);
                     }
                 });
                 $elem.find(settings.btn_down_selector).click(function() {
-                    $switched_elem = move_elem_down($elem);
+                    var $switched_elem = move_elem_down($elem);
                     if ($switched_elem) {
                         settings.post_down($elem, $switched_elem);
                     }
@@ -240,7 +239,7 @@
                 var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 //won't replace the ones in data since we put an alias
                 newFormHtml = newFormHtml.replace(prototypeNameRegexp, index);
-                $newForm = $(newFormHtml);
+                var $newForm = $(newFormHtml);
                 init_elem_listeners($newForm);
                 return $newForm;
             };
@@ -272,10 +271,10 @@
             };
 
             var move_elem_up = function($elem) {
-                $prev = $elem.prev();
+                var $prev = $elem.prev();
                 if (!$prev)
                     return false;
-                newIndex = $prev.index();
+                var newIndex = $prev.index();
                 $prev.before($elem);
                 update_index($elem, newIndex);
                 update_index($prev, newIndex + 1);
@@ -284,10 +283,10 @@
             };
 
             var move_elem_down = function($elem) {
-                $next = $elem.next();
+                var $next = $elem.next();
                 if (!$next)
                     return false;
-                newIndex = $next.index();
+                var newIndex = $next.index();
                 $next.after($elem);
                 update_index($elem, newIndex);
                 update_index($next, newIndex - 1);
@@ -296,11 +295,6 @@
             };
 
             var init_existing = function() {
-                /*
-                 * the existing nodes have no placeholders. but we need it to update it.
-                 * we need a model to save the attributes formats with placeholdes in the target element
-                 */
-                var $modelElement = $(prototype);
                 $collection_root.children().each(function() {
                     init_elem_listeners($(this));
                     if (settings.call_post_add_on_init)
@@ -313,11 +307,11 @@
             if (settings.other_btn_add) {
                 var $otherBtnAdd = null;
                 if (typeof settings.other_btn_add === 'string')
-                    $otherBtnAdd = $(settings.other_btn_add)
+                    $otherBtnAdd = $(settings.other_btn_add);
                 else if (settings.other_btn_add instanceof jQuery)
                     $otherBtnAdd = settings.other_btn_add;
                 else {
-                    console.log('other_btn_add: bad value, can be a selector or a jQuery object.')
+                    console.log('other_btn_add: bad value, can be a selector or a jQuery object.');
                 }
                 if ($otherBtnAdd) {
                     $otherBtnAdd.click(function() {
