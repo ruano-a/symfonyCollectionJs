@@ -1,5 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){(function (){
 // Polyfill from https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
 (function () {
 
@@ -383,46 +382,28 @@ formCollection.POST_DELETE_CONTEXT = {
     BTN_DELETE:     23,
     DELETE_METHOD:  42
 };
-formCollection.jQuery = null;
-// UMD : Uses CommonJS, AMD or browser globals to create a jQuery plugin (if jQuery is there)
+// UMD : Uses CommonJS, AMD or browser globals
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
+        define([], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node/CommonJS
-        module.exports = factory((typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null));
+        module.exports = factory();
     } else {
         // Browser globals
-        if (typeof jQuery !== 'undefined')
-            root.returnExports = factory(jQuery);
-        else
-            root.returnExports = factory();
+        root.returnExports = factory();
     }
-}(this, function($) {
-    if (typeof jQuery !== 'undefined' && jQuery) {
-        formCollection.jQuery = $; // jQuery is not necessarily global so it's better to know easily if it's available
-        $.fn.formCollection = function (options, param) {
-            var nodeArray = [];
-            for (var i = 0; i < this.length; i++) {
-                nodeArray.push(this[i]);
-            }
-            var ret = formCollection(nodeArray, options, param);
-            if (!Array.isArray(ret))
-                return ret;
-            return $(this);
-        };
-    }
+}(this, function() {
     return formCollection;
 }));
 
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 require('./lib/symfonyCollectionJs.js');
 // or require('symfonyCollectionJs.js'); if loaded with a package manager (and it should be)
 
-$(document).ready(function(){
-	$('#collection-root').formCollection({
+(function(){
+	formCollection(document.querySelectorAll('#collection-root'), {
 		other_btn_add:      '#collection-add-btn',
 		btn_add_selector:     '.collection-elem-add',
 		btn_delete_selector:  '.collection-elem-remove',
@@ -430,27 +411,27 @@ $(document).ready(function(){
 		btn_down_selector:  '.collection-elem-down',
 		call_post_add_on_init:  true,
 		post_add:         function(new_elem, context) {
-			$(new_elem).find('.sub-collection-root').formCollection({
-			   	other_btn_add:      $(new_elem).find('.sub-collection-add-btn'), // don't give just a selector in this case !
-			    btn_add_selector:     '.sub-collection-elem-add',
-			    btn_delete_selector:  '.sub-collection-elem-remove',
-			   	btn_up_selector:  '.sub-collection-elem-up',
+			formCollection(new_elem.querySelectorAll('.sub-collection-root'), {
+			    other_btn_add:      new_elem.querySelectorAll('.sub-collection-add-btn'), // don't give just a selector in this case !
+			   	btn_add_selector:     '.sub-collection-elem-add',
+			   	btn_delete_selector:  '.sub-collection-elem-remove',
+			    btn_up_selector:  '.sub-collection-elem-up',
 			   	btn_down_selector:  '.sub-collection-elem-down',
 			   	call_post_add_on_init:  true,
 			   	prototype_name:     '__subname__',
-		    	call_post_add_on_init:  true,
-			   	post_add:         function(new_elem, context) {
-			   		$(new_elem).find('.sub-sub-collection-root').formCollection({
-			     		other_btn_add:      $(new_elem).find('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
-			    		btn_add_selector:     '.sub-sub-collection-elem-add',
-			    		btn_delete_selector:  '.sub-sub-collection-elem-remove',
-			    		btn_up_selector:  '.sub-sub-collection-elem-up',
-			    		btn_down_selector:  '.sub-sub-collection-elem-down',
-			    		prototype_name:     '__subsubname__'
-			    	});
-			    }
-			});
-        }
-    });
+			   	call_post_add_on_init:  true,
+		    	post_add:         function(new_elem, context) {
+			    	formCollection(new_elem.querySelectorAll('.sub-sub-collection-root'), {
+			    	other_btn_add:      new_elem.querySelectorAll('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
+			   		btn_add_selector:     '.sub-sub-collection-elem-add',
+			   		btn_delete_selector:  '.sub-sub-collection-elem-remove',
+			   		btn_up_selector:  '.sub-sub-collection-elem-up',
+			   		btn_down_selector:  '.sub-sub-collection-elem-down',
+		    		prototype_name:     '__subsubname__'
+		    	});
+		    }
+	    });
+	}
 });
+})();
 },{"./lib/symfonyCollectionJs.js":1}]},{},[2]);

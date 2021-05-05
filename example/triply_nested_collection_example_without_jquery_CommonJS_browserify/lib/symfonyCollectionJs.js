@@ -381,35 +381,18 @@ formCollection.POST_DELETE_CONTEXT = {
     BTN_DELETE:     23,
     DELETE_METHOD:  42
 };
-formCollection.jQuery = null;
-// UMD : Uses CommonJS, AMD or browser globals to create a jQuery plugin (if jQuery is there)
+// UMD : Uses CommonJS, AMD or browser globals
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
+        define([], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node/CommonJS
-        module.exports = factory(require('jquery'));
+        module.exports = factory();
     } else {
         // Browser globals
-        if (typeof jQuery !== 'undefined')
-            root.returnExports = factory(jQuery);
-        else
-            root.returnExports = factory();
+        root.returnExports = factory();
     }
-}(this, function($) {
-    if (typeof jQuery !== 'undefined' && jQuery) {
-        formCollection.jQuery = $; // jQuery is not necessarily global so it's better to know easily if it's available
-        $.fn.formCollection = function (options, param) {
-            var nodeArray = [];
-            for (var i = 0; i < this.length; i++) {
-                nodeArray.push(this[i]);
-            }
-            var ret = formCollection(nodeArray, options, param);
-            if (!Array.isArray(ret))
-                return ret;
-            return $(this);
-        };
-    }
+}(this, function() {
     return formCollection;
 }));
