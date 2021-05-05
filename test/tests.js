@@ -1,3 +1,12 @@
+var extend = function (a, b) {
+    for (var key in b) {
+        if (b.hasOwnProperty(key)) {
+            a[key] = b[key];
+        }
+    }
+    return a;
+}
+
 function initSimpleCollection(additionalSettings)
 {
 	var settings = {
@@ -7,22 +16,22 @@ function initSimpleCollection(additionalSettings)
 		btn_up_selector: 		'.collection-elem-up',
 		btn_down_selector: 		'.collection-elem-down',
 	};
-	settings = $.extend(true, {}, settings, additionalSettings);
-	$('#collection-root').formCollection(settings);
+	settings = extend(settings, additionalSettings);
+	µ('#collection-root').formCollection(settings);
 }
 
 function initTripleCollection()
 {
-	$('#collection-root').formCollection({
+	µ('#collection-root').formCollection({
 		other_btn_add: 			'#collection-add-btn',
 		btn_add_selector: 		'.collection-elem-add',
 		btn_delete_selector: 	'.collection-elem-remove',
 		btn_up_selector: 		'.collection-elem-up',
 		btn_down_selector: 		'.collection-elem-down',
 		call_post_add_on_init: 	true,
-		post_add:         		function($new_elem, context) {
-			$new_elem.find('.sub-collection-root').formCollection({
-				other_btn_add:      	$new_elem.find('.sub-collection-add-btn'), // don't give just a selector in this case !
+		post_add:         		function(new_elem, context) {
+			µ(new_elem).find('.sub-collection-root').formCollection({
+				other_btn_add:      	µ(new_elem).find('.sub-collection-add-btn'), // don't give just a selector in this case !
 				btn_add_selector:     	'.sub-collection-elem-add',
 				btn_delete_selector:  	'.sub-collection-elem-remove',
 				btn_up_selector:  		'.sub-collection-elem-up',
@@ -30,9 +39,9 @@ function initTripleCollection()
 				call_post_add_on_init:  true,
 				prototype_name:     	'__subname__',
 				call_post_add_on_init: 	true,
-				post_add:         		function($new_elem, context) {
-					$new_elem.find('.sub-sub-collection-root').formCollection({
-						other_btn_add: 			$new_elem.find('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
+				post_add:         		function(new_elem, context) {
+					µ(new_elem).find('.sub-sub-collection-root').formCollection({
+						other_btn_add: 			µ(new_elem).find('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
 						btn_add_selector: 		'.sub-sub-collection-elem-add',
 						btn_delete_selector: 	'.sub-sub-collection-elem-remove',
 						btn_up_selector: 		'.sub-sub-collection-elem-up',
@@ -124,12 +133,12 @@ function guessCollectionSubSubElementResult(index, subindex, subsubindex)
 // note : should be used before any assert, to avoid any QUnit added elements
 function getWholeHtmlExceptChildrenOf(exceptParentSelector, emptyTotally)
 {
-	$clonedDom = $('html').clone();
+	µclonedDom = µ('html').clone();
 	if (emptyTotally === true)
-		$clonedDom.find(exceptParentSelector).html('');
+		µclonedDom.find(exceptParentSelector).html('');
 	else
-		$clonedDom.find(exceptParentSelector).children().remove();
-	return $clonedDom.prop('outerHTML');
+		µclonedDom.find(exceptParentSelector).children().remove();
+	return µclonedDom.prop('outerHTML');
 }
 
 function removeSpacesBetweenTags(str)
@@ -143,26 +152,26 @@ function removeSpacesBetweenTags(str)
  */
 function fillElementN(n, value1, value2)
 {
-	$inputs = $('.collection-elem:nth-child('+(n + 1)+') input');
-	$inputs.eq(0).val(value1);
-	$inputs.eq(1).val(value2);
+	µinputs = µ('.collection-elem:nth-child('+(n + 1)+') input');
+	µinputs.eq(0).val(value1);
+	µinputs.eq(1).val(value2);
 }
 
 /* date in format YYYY-MM-DD */
 function fillSubElementN(n, subN, date1, date2)
 {
-	$inputs = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
-	$inputs.eq(0).val(date1);
-	$inputs.eq(1).val(date2);
+	µinputs = µ('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
+	µinputs.eq(0).val(date1);
+	µinputs.eq(1).val(date2);
 }
 
 /* date in format YYYY-MM-DD */
 function fillSubSubElementN(n, subN, subSubN, value1, value2)
 {
-	$textareas = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
+	µtextareas = µ('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
 		') .sub-sub-collection-elem:nth-child('+(subSubN + 1)+') textarea');
-	$textareas.eq(0).val(value1);
-	$textareas.eq(1).val(value2);
+	µtextareas.eq(0).val(value1);
+	µtextareas.eq(1).val(value2);
 }
 
 /*
@@ -171,9 +180,9 @@ function fillSubSubElementN(n, subN, subSubN, value1, value2)
  */
 function assertElementNHasTheseValues(assert, n, value1, value2)
 {
-	$inputs = $('.collection-elem:nth-child('+(n + 1)+') input');
-	assert.equal($inputs.eq(0).val(), value1);
-	assert.equal($inputs.eq(1).val(), value2);
+	µinputs = µ('.collection-elem:nth-child('+(n + 1)+') input');
+	assert.equal(µinputs.eq(0).val(), value1);
+	assert.equal(µinputs.eq(1).val(), value2);
 }
 
 /*
@@ -182,9 +191,9 @@ function assertElementNHasTheseValues(assert, n, value1, value2)
  */
 function assertSubElementNHasTheseValues(assert, n, subN, date1, date2)
 {
-	$inputs = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
-	assert.equal($inputs.eq(0).val(), date1);
-	assert.equal($inputs.eq(1).val(), date2);
+	µinputs = µ('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+') input');
+	assert.equal(µinputs.eq(0).val(), date1);
+	assert.equal(µinputs.eq(1).val(), date2);
 }
 
 /*
@@ -193,10 +202,10 @@ function assertSubElementNHasTheseValues(assert, n, subN, date1, date2)
  */
 function assertSubSubElementNHasTheseValues(assert, n, subN, subsubN, value1, value2)
 {
-	$textareas = $('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
+	µtextareas = µ('.collection-elem:nth-child('+(n + 1)+') .sub-collection-elem:nth-child('+(subN + 1)+
 		') .sub-sub-collection-elem:nth-child('+(subsubN + 1)+') textarea');
-	assert.equal($textareas.eq(0).val(), value1);
-	assert.equal($textareas.eq(1).val(), value2);
+	assert.equal(µtextareas.eq(0).val(), value1);
+	assert.equal(µtextareas.eq(1).val(), value2);
 }
 
 function hasDuplicates(arr)
@@ -206,49 +215,51 @@ function hasDuplicates(arr)
 
 /* Note : in assert.equal, the expected is the 2nd param */
 QUnit.module('Registration / initializing', function() {
- 	QUnit.test('Registration', function( assert ) {
-  		assert.ok($.fn.formCollection, 'registered as a jQuery plugin');
-  	});
+  if (typeof jQuery !== 'undefined') { // only useful for the tests with jQuery
+   	QUnit.test('Registration', function( assert ) {
+    		assert.ok($.fn.formCollection, 'registered as a jQuery plugin');
+    	});
+  }
 
     QUnit.test('are public enums set and correct', function(assert) {
-  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT, 'POST_ADD_CONTEXT enum is set');
-  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT, 'POST_DELETE_CONTEXT enum is set');
-  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD);
-  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
-  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.INIT);
-  		assert.ok($.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD);
-  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
-  		assert.ok($.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
+  		assert.ok(formCollection.POST_ADD_CONTEXT, 'POST_ADD_CONTEXT enum is set');
+  		assert.ok(formCollection.POST_DELETE_CONTEXT, 'POST_DELETE_CONTEXT enum is set');
+  		assert.ok(formCollection.POST_ADD_CONTEXT.BTN_ADD);
+  		assert.ok(formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
+  		assert.ok(formCollection.POST_ADD_CONTEXT.INIT);
+  		assert.ok(formCollection.POST_ADD_CONTEXT.ADD_METHOD);
+  		assert.ok(formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
+  		assert.ok(formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
   		var values = [
-  			$.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD,
-  			$.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD,
-  			$.fn.formCollection.POST_ADD_CONTEXT.INIT,
-  			$.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD,
-  			$.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE,
-  			$.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD
+  			formCollection.POST_ADD_CONTEXT.BTN_ADD,
+  			formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD,
+  			formCollection.POST_ADD_CONTEXT.INIT,
+  			formCollection.POST_ADD_CONTEXT.ADD_METHOD,
+  			formCollection.POST_DELETE_CONTEXT.BTN_DELETE,
+  			formCollection.POST_DELETE_CONTEXT.DELETE_METHOD
   		];
   		assert.false(hasDuplicates(values));
     });
 
     QUnit.test('initializing the collection should not alter the page', function(assert) {
-    	var $page = $('html');
-    	var htmlBefore = $page.prop('outerHTML');
+    	var µpage = µ('html');
+    	var htmlBefore = µpage.prop('outerHTML');
     	initTripleCollection();
-      	assert.equal($page.prop('outerHTML'), htmlBefore);
+      	assert.equal(µpage.prop('outerHTML'), htmlBefore);
     });
 });
 
 QUnit.module('Side add btn', function() {
     QUnit.test('other_btn_add should add an element on click', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), guessCollectionElementResult(0));
+    	µ('#collection-add-btn').click();
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), guessCollectionElementResult(0));
     });
 
     QUnit.test('other_btn_add should not modify the rest of the page on click', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -257,26 +268,26 @@ QUnit.module('Side add btn', function() {
 QUnit.module('Add down', function() {
     QUnit.test('btn_add_selector should add an element on click after the element with the button', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-      	assert.equal($('.collection-elem').length, 2); //there should be two elements
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+      	assert.equal(µ('.collection-elem').length, 2); //there should be two elements
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
-    	$('.collection-elem-add').eq(0).click(); // we add an element between the existing one
+    	µ('.collection-elem-add').eq(0).click(); // we add an element between the existing one
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 1, '', '');
       	assertElementNHasTheseValues(assert, 2, 'elem 1 input 0', 'elem 1 input 1');
       	var elementsHtml = guessCollectionElementResult(0) + guessCollectionElementResult(1) + guessCollectionElementResult(2);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), elementsHtml);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), elementsHtml);
     });
 
     QUnit.test('btn_add_selector should not modify the rest of the page on click', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(2).click(); // we add an element at the end
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(2).click(); // we add an element at the end
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -285,35 +296,35 @@ QUnit.module('Add down', function() {
 QUnit.module('Removal', function() {
     QUnit.test('btn_delete_selector should remove an element on click', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-      	assert.equal($('.collection-elem').length, 3); //just in case
-    	$('.collection-elem-remove').eq(1).click(); // we erase the element in between
-      	assert.equal($('.collection-elem').length, 2); //there should be two elements
+      	assert.equal(µ('.collection-elem').length, 3); //just in case
+    	µ('.collection-elem-remove').eq(1).click(); // we erase the element in between
+      	assert.equal(µ('.collection-elem').length, 2); //there should be two elements
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 2 input 0', 'elem 2 input 1');
-    	$('.collection-elem-remove').eq(0).click(); // we erase the first element
-      	assert.equal($('.collection-elem').length, 1); //there should be one element
+    	µ('.collection-elem-remove').eq(0).click(); // we erase the first element
+      	assert.equal(µ('.collection-elem').length, 1); //there should be one element
       	assertElementNHasTheseValues(assert, 0, 'elem 2 input 0', 'elem 2 input 1');
-    	$('.collection-elem-remove').eq(0).click(); // we erase the first element
-      	assert.equal($('.collection-elem').length, 0); //there should be no element
+    	µ('.collection-elem-remove').eq(0).click(); // we erase the first element
+      	assert.equal(µ('.collection-elem').length, 0); //there should be no element
     });
 
     QUnit.test('btn_delete_selector should not modify the rest of the page on click', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-remove').eq(1).click(); // we erase the element in between
-    	$('.collection-elem-remove').eq(1).click(); // we erase the element at the bottom
-    	$('.collection-elem-remove').eq(0).click(); // we erase the first element
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-remove').eq(1).click(); // we erase the element in between
+    	µ('.collection-elem-remove').eq(1).click(); // we erase the element at the bottom
+    	µ('.collection-elem-remove').eq(0).click(); // we erase the first element
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
-      	assert.equal($('.collection-elem').length, 0); // just in case
+      	assert.equal(µ('.collection-elem').length, 0); // just in case
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
  });
@@ -321,19 +332,19 @@ QUnit.module('Removal', function() {
 QUnit.module('Move up', function() {
     QUnit.test('btn_up_selector should move an element up', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-      	assert.equal($('.collection-elem').length, 3); //just in case
-    	$('.collection-elem-up').eq(2).click(); // we move up the last element
+      	assert.equal(µ('.collection-elem').length, 3); //just in case
+    	µ('.collection-elem-up').eq(2).click(); // we move up the last element
 
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 2 input 0', 'elem 2 input 1');
       	assertElementNHasTheseValues(assert, 2, 'elem 1 input 0', 'elem 1 input 1');
-    	$('.collection-elem-up').eq(1).click(); // we move up the middle element
+    	µ('.collection-elem-up').eq(1).click(); // we move up the middle element
       	assertElementNHasTheseValues(assert, 0, 'elem 2 input 0', 'elem 2 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 2, 'elem 1 input 0', 'elem 1 input 1');
@@ -341,15 +352,15 @@ QUnit.module('Move up', function() {
 
     QUnit.test('btn_up_selector should not modify the rest of the page on click', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-    	$('.collection-elem-up').eq(2).click(); // we move up the last element
-    	$('.collection-elem-up').eq(1).click(); // we move up the middle element
+    	µ('.collection-elem-up').eq(2).click(); // we move up the last element
+    	µ('.collection-elem-up').eq(1).click(); // we move up the middle element
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -358,19 +369,19 @@ QUnit.module('Move up', function() {
 QUnit.module('Move down', function() {
     QUnit.test('btn_down_selector should move an element down', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-      	assert.equal($('.collection-elem').length, 3); //just in case
-    	$('.collection-elem-down').eq(0).click(); // we move down the first element
+      	assert.equal(µ('.collection-elem').length, 3); //just in case
+    	µ('.collection-elem-down').eq(0).click(); // we move down the first element
 
       	assertElementNHasTheseValues(assert, 0, 'elem 1 input 0', 'elem 1 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 2, 'elem 2 input 0', 'elem 2 input 1');
-    	$('.collection-elem-down').eq(1).click(); // we move down the middle element
+    	µ('.collection-elem-down').eq(1).click(); // we move down the middle element
       	assertElementNHasTheseValues(assert, 0, 'elem 1 input 0', 'elem 1 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 2 input 0', 'elem 2 input 1');
       	assertElementNHasTheseValues(assert, 2, 'elem 0 input 0', 'elem 0 input 1');
@@ -378,15 +389,15 @@ QUnit.module('Move down', function() {
 
     QUnit.test('btn_down_selector should not modify the rest of the page on click', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-    	$('.collection-elem-down').eq(0).click(); // we move down the last element
-    	$('.collection-elem-down').eq(1).click(); // we move down the middle element
+    	µ('.collection-elem-down').eq(0).click(); // we move down the last element
+    	µ('.collection-elem-down').eq(1).click(); // we move down the middle element
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -402,19 +413,19 @@ QUnit.module('post_add', function() {
     		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
-    	$('#collection-add-btn').click(); // other_btn_add
+    	µ('#collection-add-btn').click(); // other_btn_add
     	assert.true(test, 'post_add called after click on other_btn_add');
     	test = false; // reset
-    	$('.collection-elem-add').eq(0).click(); // btn_add_selector
+    	µ('.collection-elem-add').eq(0).click(); // btn_add_selector
     	assert.true(test, 'post_add called after click on btn_add_selector');
     	test = false; // reset
-    	$('#collection-root').formCollection('add'); // add method
+    	µ('#collection-root').formCollection('add'); // add method
     	assert.true(test, 'post_add called after calling the add method');
     });
 
     QUnit.test('post_add is not triggered during init if call_post_add_on_init is false', function(assert) {
-    	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
-    	$('#collection-root').append(guessCollectionElementResult(1));
+    	µ('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
+    	µ('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
     	initSimpleCollection({
     		call_post_add_on_init: 	false,
@@ -426,8 +437,8 @@ QUnit.module('post_add', function() {
     });
 
     QUnit.test('post_add is triggered during init if call_post_add_on_init is true', function(assert) {
-    	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
-    	$('#collection-root').append(guessCollectionElementResult(1));
+    	µ('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
+    	µ('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
     	initSimpleCollection({
     		call_post_add_on_init: 	true,
@@ -439,25 +450,25 @@ QUnit.module('post_add', function() {
     });
 
     QUnit.test('the post_add context should have the right value', function(assert) {
-    	$('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
-    	$('#collection-root').append(guessCollectionElementResult(1));
+    	µ('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
+    	µ('#collection-root').append(guessCollectionElementResult(1));
     	var test = false;
     	initSimpleCollection({
     		call_post_add_on_init: 	true,
-    		post_add: 				function($new_elem, context) {
+    		post_add: 				function(µnew_elem, context) {
     			test = context;
     		}
     	});
-    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.INIT, 'correct context on init');
+    	assert.equal(test, formCollection.POST_ADD_CONTEXT.INIT, 'correct context on init');
     	test = false; // reset
-    	$('#collection-add-btn').click(); //other_btn_add
-    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD, 'correct context on other_btn_add');
+    	µ('#collection-add-btn').click(); //other_btn_add
+    	assert.equal(test, formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD, 'correct context on other_btn_add');
     	test = false; // reset
-    	$('.collection-elem-add').eq(0).click(); //btn_add_selector
-    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.BTN_ADD, 'correct context on btn_add_selector');
+    	µ('.collection-elem-add').eq(0).click(); //btn_add_selector
+    	assert.equal(test, formCollection.POST_ADD_CONTEXT.BTN_ADD, 'correct context on btn_add_selector');
     	test = false; // reset
-    	$('#collection-root').formCollection('add');
-    	assert.equal(test, $.fn.formCollection.POST_ADD_CONTEXT.ADD_METHOD, 'correct context with add method');
+    	µ('#collection-root').formCollection('add');
+    	assert.equal(test, formCollection.POST_ADD_CONTEXT.ADD_METHOD, 'correct context with add method');
     });
  });
 
@@ -470,32 +481,32 @@ QUnit.module('post_delete', function() {
     		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
     	// now we have 2 elements
-    	$('.collection-elem-remove').eq(0).click(); // btn_delete_selector
+    	µ('.collection-elem-remove').eq(0).click(); // btn_delete_selector
     	assert.true(test, 'post_delete called after click on other_btn_add');
     	test = false; // reset
-    	$('#collection-root').formCollection('delete', 0); // delete method
+    	µ('#collection-root').formCollection('delete', 0); // delete method
     	assert.true(test, 'post_delete called after calling the remove method');
     });
 
     QUnit.test('the post_delete context has the right value', function(assert) {
     	var test = false;
     	initSimpleCollection({
-    		post_delete: function($delete_elem, context) {
+    		post_delete: function(µdelete_elem, context) {
     			test = context;
     		}
     	});
     	assert.false(test); // to check that the callback isn't triggered without reason
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
     	// now we have 2 elements
-    	$('.collection-elem-remove').eq(0).click(); // btn_delete_selector
-    	assert.equal(test, $.fn.formCollection.POST_DELETE_CONTEXT.BTN_DELETE, 'correct context on btn_delete_selector');
+    	µ('.collection-elem-remove').eq(0).click(); // btn_delete_selector
+    	assert.equal(test, formCollection.POST_DELETE_CONTEXT.BTN_DELETE, 'correct context on btn_delete_selector');
     	test = false; // reset
-    	$('#collection-root').formCollection('delete', 0); // delete method
-    	assert.equal(test, $.fn.formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, 'correct context on delete method');
+    	µ('#collection-root').formCollection('delete', 0); // delete method
+    	assert.equal(test, formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, 'correct context on delete method');
     });
 });
 
@@ -504,13 +515,13 @@ QUnit.module('max_elems', function() {
     	initSimpleCollection({
     		max_elems: 3
     	});
-    	$('#collection-add-btn').click();
-    	$('#collection-add-btn').click();
-    	$('#collection-add-btn').click();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('#collection-root').formCollection('add'); // add method
-    	assert.equal($('#collection-root').children().length, 3);
+    	µ('#collection-add-btn').click();
+    	µ('#collection-add-btn').click();
+    	µ('#collection-add-btn').click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('#collection-root').formCollection('add'); // add method
+    	assert.equal(µ('#collection-root').children().length, 3);
     });
 });
 
@@ -525,38 +536,38 @@ function guessCollectionPrototypeElementResult(index)
 /* Note : this is tested anyway with the triply nested collection, but a bonus separate test is always better*/
 QUnit.module('prototype_name', function() {
     QUnit.test('prototype_name should allow to set a custom placeholder', function(assert) {
-		$('#collection-prototype-root').formCollection({
+		µ('#collection-prototype-root').formCollection({
 			other_btn_add: 	'#collection-prototype-add-btn',
 			prototype_name: '__customproto__'
 		});
-    	$('#collection-prototype-add-btn').click();
-    	assert.equal(removeSpacesBetweenTags($('#collection-prototype-root').html()).trim(), guessCollectionPrototypeElementResult(0));
+    	µ('#collection-prototype-add-btn').click();
+    	assert.equal(removeSpacesBetweenTags(µ('#collection-prototype-root').html()).trim(), guessCollectionPrototypeElementResult(0));
     });
 });
 
 QUnit.module('The method add (.formCollection(\'add\'))', function() {
     QUnit.test('The method add should add an element at the bottom', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
-      	$('#collection-root').formCollection('add'); // we add an element at the bottom
-      	assert.equal($('.collection-elem').length, 3); //there should be three elements
+      	µ('#collection-root').formCollection('add'); // we add an element at the bottom
+      	assert.equal(µ('.collection-elem').length, 3); //there should be three elements
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 1 input 0', 'elem 1 input 1');
       	assertElementNHasTheseValues(assert, 2, '', '');
       	var elementsHtml = guessCollectionElementResult(0) + guessCollectionElementResult(1) + guessCollectionElementResult(2);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), elementsHtml);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), elementsHtml);
     });
 
     QUnit.test('The method add should not modify the rest of the page', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click();
-      	$('#collection-root').formCollection('add'); // we add an element at the bottom
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click();
+      	µ('#collection-root').formCollection('add'); // we add an element at the bottom
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -572,53 +583,53 @@ QUnit.module('The method add (.formCollection(\'add\'))', function() {
     			count++;
     		}
     	});
-    	$('#collection-root').formCollection('add');
-    	$('#collection-root').formCollection('add');
-      	$('#collection-prototype-root').formCollection({
+    	µ('#collection-root').formCollection('add');
+    	µ('#collection-root').formCollection('add');
+      	µ('#collection-prototype-root').formCollection({
 			other_btn_add: 	'#collection-prototype-add-btn',
 			prototype_name: '__customproto__'
 		});
-    	$('#collection-prototype-root').formCollection('add');
-    	$('#collection-prototype-root').formCollection('add');
+    	µ('#collection-prototype-root').formCollection('add');
+    	µ('#collection-prototype-root').formCollection('add');
       	assert.equal(count, 2);
     	var expectedPrototypeCollectionHtml = guessCollectionPrototypeElementResult(0) + guessCollectionPrototypeElementResult(1);
-    	assert.equal(removeSpacesBetweenTags($('#collection-prototype-root').html()).trim(), expectedPrototypeCollectionHtml);
+    	assert.equal(removeSpacesBetweenTags(µ('#collection-prototype-root').html()).trim(), expectedPrototypeCollectionHtml);
     });
 });
 
 QUnit.module('The method delete (.formCollection(\'delete\', index))', function() {
     QUnit.test('The method delete should delete the element at the specified index', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements
       	fillElementN(0, 'elem 0 input 0', 'elem 0 input 1');
       	fillElementN(1, 'elem 1 input 0', 'elem 1 input 1');
       	fillElementN(2, 'elem 2 input 0', 'elem 2 input 1');
-      	assert.equal($('.collection-elem').length, 3); // just in case
-      	$('#collection-root').formCollection('delete', 1); // we delete the middle element
+      	assert.equal(µ('.collection-elem').length, 3); // just in case
+      	µ('#collection-root').formCollection('delete', 1); // we delete the middle element
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
       	assertElementNHasTheseValues(assert, 1, 'elem 2 input 0', 'elem 2 input 1');
       	var elementsHtml = guessCollectionElementResult(0) + guessCollectionElementResult(1);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), elementsHtml);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), elementsHtml);
 
-      	$('#collection-root').formCollection('delete', 1); // we delete the bottom element
+      	µ('#collection-root').formCollection('delete', 1); // we delete the bottom element
       	assertElementNHasTheseValues(assert, 0, 'elem 0 input 0', 'elem 0 input 1');
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), guessCollectionElementResult(0));
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), guessCollectionElementResult(0));
 
-      	$('#collection-root').formCollection('delete', 0); // we delete the last
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), '');
+      	µ('#collection-root').formCollection('delete', 0); // we delete the last
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), '');
     });
 
     QUnit.test('The method delete should not modify the rest of the page', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements 
-      	$('#collection-root').formCollection('delete', 1); // we delete the middle element
-      	$('#collection-root').formCollection('delete', 0); // we delete the first element
-      	$('#collection-root').formCollection('delete', 0); // we delete the "new" first element
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements 
+      	µ('#collection-root').formCollection('delete', 1); // we delete the middle element
+      	µ('#collection-root').formCollection('delete', 0); // we delete the first element
+      	µ('#collection-root').formCollection('delete', 0); // we delete the "new" first element
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -634,42 +645,42 @@ QUnit.module('The method delete (.formCollection(\'delete\', index))', function(
     			count++;
     		}
     	});
-    	$('#collection-add-btn').click();
-    	$('#collection-add-btn').click();
-    	$('#collection-root').formCollection('delete', 1);
-    	$('#collection-root').formCollection('delete', 0);
-      	$('#collection-prototype-root').formCollection({
+    	µ('#collection-add-btn').click();
+    	µ('#collection-add-btn').click();
+    	µ('#collection-root').formCollection('delete', 1);
+    	µ('#collection-root').formCollection('delete', 0);
+      	µ('#collection-prototype-root').formCollection({
 			other_btn_add: 	'#collection-prototype-add-btn',
 			prototype_name: '__customproto__'
 		});
-    	$('#collection-prototype-add-btn').click();
-    	$('#collection-prototype-add-btn').click();
-    	$('#collection-prototype-add-btn').click();
-    	$('#collection-prototype-root').formCollection('delete', 1);
+    	µ('#collection-prototype-add-btn').click();
+    	µ('#collection-prototype-add-btn').click();
+    	µ('#collection-prototype-add-btn').click();
+    	µ('#collection-prototype-root').formCollection('delete', 1);
       	assert.equal(count, 2);
     	var expectedPrototypeCollectionHtml = guessCollectionPrototypeElementResult(0) + guessCollectionPrototypeElementResult(1);
-    	assert.equal(removeSpacesBetweenTags($('#collection-prototype-root').html()).trim(), expectedPrototypeCollectionHtml);
+    	assert.equal(removeSpacesBetweenTags(µ('#collection-prototype-root').html()).trim(), expectedPrototypeCollectionHtml);
     });
 });
 
 QUnit.module('The method clear (.formCollection(\'clear\'))', function() {
     QUnit.test('The method clear should delete every element', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements
-      	assert.equal($('.collection-elem').length, 3); // just in case
-      	$('#collection-root').formCollection('clear'); // we delete everything
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), '');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements
+      	assert.equal(µ('.collection-elem').length, 3); // just in case
+      	µ('#collection-root').formCollection('clear'); // we delete everything
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), '');
     });
 
     QUnit.test('The method clear should not modify the rest of the page', function(assert) {
     	initTripleCollection();
     	var htmlBefore = getWholeHtmlExceptChildrenOf('#collection-root', true); // necessary because of spaces
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements 
-      	$('#collection-root').formCollection('clear'); // we delete everything
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements 
+      	µ('#collection-root').formCollection('clear'); // we delete everything
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root', true);
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -686,45 +697,45 @@ QUnit.module('The method clear (.formCollection(\'clear\'))', function() {
 QUnit.module('The method refreshAttributes (.formCollection(\'refreshAttributes\', from))', function() {
     QUnit.test('The method refreshAttributes should refresh the attributes with placeholder from the given index', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements
-      	assert.equal($('.collection-elem').length, 3); // just in case
-      	$('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
-      	$('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
-      	$('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements
+      	assert.equal(µ('.collection-elem').length, 3); // just in case
+      	µ('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+      	µ('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
+      	µ('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
       	// the first element shouldn't be affected since we refresh from the second
-      	var firstElemHtml = removeSpacesBetweenTags($('.collection-elem:nth-child(1)').prop('outerHTML')).trim();
+      	var firstElemHtml = removeSpacesBetweenTags(µ('.collection-elem:nth-child(1)').prop('outerHTML')).trim();
       	assert.notEqual(firstElemHtml, guessCollectionElementResult(0)); // just in case
-      	$('#collection-root').formCollection('refreshAttributes', 1); // we refresh attributes from the second
+      	µ('#collection-root').formCollection('refreshAttributes', 1); // we refresh attributes from the second
       	var expected = firstElemHtml + guessCollectionElementResult(1) + guessCollectionElementResult(2);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expected);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expected);
     });
 
     QUnit.test('The method refreshAttributes should refresh the attributes with placeholder of sub collections too', function(assert) {
     	initTripleCollection();
-    	$('#collection-add-btn').click();
-    	$('.sub-collection-add-btn').eq(0).click();
-    	$('.sub-sub-collection-add-btn').eq(0).click(); // 1 elem with a sub elem with a sub sub elem
-      	$('textarea:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+    	µ('#collection-add-btn').click();
+    	µ('.sub-collection-add-btn').eq(0).click();
+    	µ('.sub-sub-collection-add-btn').eq(0).click(); // 1 elem with a sub elem with a sub sub elem
+      	µ('textarea:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
       	// the first element shouldn't be affected since we refresh from the second
-      	var subsubElemHtml = removeSpacesBetweenTags($('.sub-sub-collection-elem').prop('outerHTML')).trim();
+      	var subsubElemHtml = removeSpacesBetweenTags(µ('.sub-sub-collection-elem').prop('outerHTML')).trim();
       	assert.notEqual(subsubElemHtml, guessCollectionSubSubElementResult(0, 0, 0)); // just in case
-      	$('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes from the first
+      	µ('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes from the first
       	var expected = guessCollectionElementResult(0, [1]);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expected);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expected);
     });
 
     QUnit.test('The method refreshAttributes should not modify the rest of the page', function(assert) {
     	initTripleCollection();
-    	var htmlBefore = $('html').prop('outerHTML');
-    	$('#collection-add-btn').click();
-    	$('.collection-elem-add').eq(0).click();
-    	$('.collection-elem-add').eq(0).click(); // 3 elements 
-      	$('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
-      	$('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
-      	$('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
-      	$('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes of each elem
+    	var htmlBefore = µ('html').prop('outerHTML');
+    	µ('#collection-add-btn').click();
+    	µ('.collection-elem-add').eq(0).click();
+    	µ('.collection-elem-add').eq(0).click(); // 3 elements 
+      	µ('.collection-elem:nth-child(1) input:nth-of-type(1)').prop('name', 'blabla').prop('id', 'nothing');
+      	µ('.collection-elem:nth-child(2) input:nth-of-type(1)').prop('name', 'hello').prop('id', 'bye');
+      	µ('.collection-elem:nth-child(3) input:nth-of-type(1)').prop('name', 'foo').prop('id', 'bar');
+      	µ('#collection-root').formCollection('refreshAttributes', 0); // we refresh attributes of each elem
     	var htmlWithoutCollectionContent = getWholeHtmlExceptChildrenOf('#collection-root');
       	assert.equal(htmlWithoutCollectionContent, htmlBefore);
     });
@@ -735,11 +746,11 @@ QUnit.module('The method refreshAttributes (.formCollection(\'refreshAttributes\
 function makeElementsTree(elementNumber, subElementsNumbers, subSubElementsNumbers)
 {
 	for (var i = 0; i < elementNumber; i++) {
-    	$('#collection-add-btn').click();
+    	µ('#collection-add-btn').click();
     	for (var j = 0; j < subElementsNumbers; j++) {
-    		$('.collection-elem').eq(i).find('.sub-collection-add-btn').click();
+    		µ('.collection-elem').eq(i).find('.sub-collection-add-btn').click();
     		for (var k = 0; k < subSubElementsNumbers; k++) {
-    			$('.collection-elem').eq(i).find('.sub-collection-elem').eq(j).find('.sub-sub-collection-add-btn').click();
+    			µ('.collection-elem').eq(i).find('.sub-collection-elem').eq(j).find('.sub-sub-collection-add-btn').click();
     		};
     	};
 	};
@@ -790,7 +801,7 @@ QUnit.module('collection nesting (3 levels)', function() {
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3])
     							+ guessCollectionElementResult(2, [3, 3, 3]);
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expectedResult);
 	});
 
     QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after adding an element', function(assert) {
@@ -799,15 +810,15 @@ QUnit.module('collection nesting (3 levels)', function() {
     	
     	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
     	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
-    	$('.collection-elem-add').eq(1).click(); // add an element between the 1 and the 2
+    	µ('.collection-elem-add').eq(1).click(); // add an element between the 1 and the 2
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3])
     							+ guessCollectionElementResult(2) // the added element
     							+ guessCollectionElementResult(3, [3, 3, 3]);
     	assertElementNChildrenHaveTheseValues(assert, 1, '1', '2000');
-    	assert.equal($('.collection-elem-add:nth-child(3) .sub-collection-elem').length, 0); // the added elem has no children
+    	assert.equal(µ('.collection-elem-add:nth-child(3) .sub-collection-elem').length, 0); // the added elem has no children
     	assertElementNChildrenHaveTheseValues(assert, 3, '2', '2001');
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expectedResult);
 	});
 
     QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after removing an element', function(assert) {
@@ -815,12 +826,12 @@ QUnit.module('collection nesting (3 levels)', function() {
     	makeElementsTree(3, 3, 3);
     	fillElementNChildren(0, '0', '2000'); // we fill sub elements and sub sub elements in the element 0
     	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
-    	$('.collection-elem-remove').eq(1).click(); // remove the second element
+    	µ('.collection-elem-remove').eq(1).click(); // remove the second element
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3]);
     	assertElementNChildrenHaveTheseValues(assert, 0, '0', '2000');
     	assertElementNChildrenHaveTheseValues(assert, 1, '2', '2001');
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expectedResult);
 	});
 
     QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after moving an element up', function(assert) {
@@ -830,14 +841,14 @@ QUnit.module('collection nesting (3 levels)', function() {
     	fillElementNChildren(0, '0', '1999'); // we fill sub elements and sub sub elements in the element 0
     	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
     	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
-    	$('.collection-elem-up').eq(1).click(); // move the middle element up
+    	µ('.collection-elem-up').eq(1).click(); // move the middle element up
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3])
     							+ guessCollectionElementResult(2, [3, 3, 3]);
     	assertElementNChildrenHaveTheseValues(assert, 0, '1', '2000');
     	assertElementNChildrenHaveTheseValues(assert, 1, '0', '1999');
     	assertElementNChildrenHaveTheseValues(assert, 2, '2', '2001');
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expectedResult);
 	});
 
     QUnit.test('elements should move correctly, attributes of sub and sub sub elements should be updated after moving an element down', function(assert) {
@@ -847,13 +858,13 @@ QUnit.module('collection nesting (3 levels)', function() {
     	fillElementNChildren(0, '0', '1999'); // we fill sub elements and sub sub elements in the element 0
     	fillElementNChildren(1, '1', '2000'); // we fill sub elements and sub sub elements in the element 1
     	fillElementNChildren(2, '2', '2001'); // we fill sub elements and sub sub elements in the element 2
-    	$('.collection-elem-down').eq(1).click(); // move the middle element up
+    	µ('.collection-elem-down').eq(1).click(); // move the middle element up
     	var expectedResult = guessCollectionElementResult(0, [3, 3, 3]) // 3 children with 3 children each
     							+ guessCollectionElementResult(1, [3, 3, 3])
     							+ guessCollectionElementResult(2, [3, 3, 3]);
     	assertElementNChildrenHaveTheseValues(assert, 0, '0', '1999');
     	assertElementNChildrenHaveTheseValues(assert, 1, '2', '2001');
     	assertElementNChildrenHaveTheseValues(assert, 2, '1', '2000');
-      	assert.equal(removeSpacesBetweenTags($('#collection-root').html()).trim(), expectedResult);
+      	assert.equal(removeSpacesBetweenTags(µ('#collection-root').html()).trim(), expectedResult);
 	});
 });

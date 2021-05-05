@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Triply nested collection example</title>
+		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.11.2.css">
+		<style>
+			.collection-elem{
+				border: green solid 3px;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				padding: 10px;
+			}
+
+			.sub-collection-root
+			{
+				padding: 10px;
+			}
+
+			.sub-collection-elem{
+				border: red solid 3px;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				padding: 10px;
+			}
+
+			.sub-sub-collection-root
+			{
+				padding: 10px;
+			}
+
+			.sub-sub-collection-elem{
+				border: blue solid 3px;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Triple nested collection, so the data-prototype has a triply encoded html with escape('html_attr') -->
+		<div id="collection-root" data-prototype="&lt;div&#x20;class&#x3D;&quot;collection-elem&quot;&gt;&#x0A;&#x09;&lt;div&gt;&#x0A;&#x09;&#x09;&lt;button&#x20;class&#x3D;&quot;collection-elem-add&quot;&gt;&#x2B;&lt;&#x2F;button&gt;&#x0A;&#x09;&#x09;&lt;button&#x20;class&#x3D;&quot;collection-elem-remove&quot;&gt;-&lt;&#x2F;button&gt;&#x0A;&#x09;&#x09;&lt;button&#x20;class&#x3D;&quot;collection-elem-up&quot;&gt;up&lt;&#x2F;button&gt;&#x0A;&#x09;&#x09;&lt;button&#x20;class&#x3D;&quot;collection-elem-down&quot;&gt;down&lt;&#x2F;button&gt;&#x0A;&#x09;&lt;&#x2F;div&gt;&#x0A;&#x09;&lt;h2&gt;This&#x20;is&#x20;a&#x20;collection&#x20;element&lt;&#x2F;h2&gt;&#x0A;&#x09;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;id&#x3D;&quot;form_collection___name___myinput&quot;&#x20;name&#x3D;&quot;form&#x5B;collection&#x5D;&#x5B;__name__&#x5D;&#x5B;myinput&#x5D;&quot;&gt;&#x0A;&#x09;&lt;input&#x20;type&#x3D;&quot;text&quot;&#x20;id&#x3D;&quot;form_collection___name___myotherinput&quot;&#x20;name&#x3D;&quot;form&#x5B;collection&#x5D;&#x5B;__name__&#x5D;&#x5B;myotherinput&#x5D;&quot;&gt;&#x0A;&#x09;&lt;div&#x20;class&#x3D;&quot;sub-collection-root&quot;&#x20;data-prototype&#x3D;&quot;&amp;lt&#x3B;div&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-collection-elem&amp;quot&#x3B;&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;div&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;button&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-collection-elem-add&amp;quot&#x3B;&amp;gt&#x3B;&amp;&#x23;x2B&#x3B;&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;button&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;button&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-collection-elem-remove&amp;quot&#x3B;&amp;gt&#x3B;-&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;button&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;button&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-collection-elem-up&amp;quot&#x3B;&amp;gt&#x3B;up&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;button&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;button&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-collection-elem-down&amp;quot&#x3B;&amp;gt&#x3B;down&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;button&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;div&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;h2&amp;gt&#x3B;This&amp;&#x23;x20&#x3B;is&amp;&#x23;x20&#x3B;a&amp;&#x23;x20&#x3B;subcollection&amp;&#x23;x20&#x3B;element&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;h2&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;input&amp;&#x23;x20&#x3B;type&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;date&amp;quot&#x3B;&amp;&#x23;x20&#x3B;id&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;form_collection___name___subcollection___subname___begin&amp;quot&#x3B;&amp;&#x23;x20&#x3B;name&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;form&amp;&#x23;x5B&#x3B;collection&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;__name__&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;subcollection&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;__subname__&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;begin&amp;&#x23;x5D&#x3B;&amp;quot&#x3B;&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;input&amp;&#x23;x20&#x3B;type&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;date&amp;quot&#x3B;&amp;&#x23;x20&#x3B;id&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;form_collection___name___subcollection___subname___end&amp;quot&#x3B;&amp;&#x23;x20&#x3B;name&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;form&amp;&#x23;x5B&#x3B;collection&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;__name__&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;subcollection&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;__subname__&amp;&#x23;x5D&#x3B;&amp;&#x23;x5B&#x3B;end&amp;&#x23;x5D&#x3B;&amp;quot&#x3B;&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;div&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-sub-collection-root&amp;quot&#x3B;&amp;&#x23;x20&#x3B;data-prototype&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;div&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;class&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;sub-sub-collection-elem&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;div&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;class&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;sub-sub-collection-elem-add&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2B&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;class&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;sub-sub-collection-elem-remove&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;-&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;class&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;sub-sub-collection-elem-up&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;up&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;class&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;sub-sub-collection-elem-down&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;down&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;button&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;div&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;h2&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;This&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;is&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;a&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;sub-subcollection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;element&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;h2&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;textarea&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;id&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;form_collection___name___subcollection___subname___subsubcollection___subsubname___firstblabla&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;name&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;form&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;collection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__name__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;subcollection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__subname__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;subsubcollection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__subsubname__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;firstblabla&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;textarea&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x09&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;textarea&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;id&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;form_collection___name___subcollection___subname___subsubcollection___subsubname___secondblabla&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x20&amp;&#x23;x3B&#x3B;name&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x3D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;form&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;collection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__name__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;subcollection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__subname__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;subsubcollection&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;__subsubname__&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5B&amp;&#x23;x3B&#x3B;secondblabla&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x5D&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;quot&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;textarea&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x0A&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;lt&amp;&#x23;x3B&#x3B;&amp;amp&#x3B;&amp;&#x23;x23&#x3B;x2F&amp;&#x23;x3B&#x3B;div&amp;amp&#x3B;gt&amp;&#x23;x3B&#x3B;&amp;quot&#x3B;&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;div&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;&#x23;x09&#x3B;&amp;lt&#x3B;button&amp;&#x23;x20&#x3B;class&amp;&#x23;x3D&#x3B;&amp;quot&#x3B;sub-sub-collection-add-btn&amp;quot&#x3B;&amp;gt&#x3B;Add&amp;&#x23;x20&#x3B;sub&amp;&#x23;x20&#x3B;sub&amp;&#x23;x20&#x3B;element&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;button&amp;gt&#x3B;&amp;&#x23;x0A&#x3B;&amp;lt&#x3B;&amp;&#x23;x2F&#x3B;div&amp;gt&#x3B;&quot;&gt;&#x0A;&#x09;&lt;&#x2F;div&gt;&#x0A;&#x09;&lt;button&#x20;class&#x3D;&quot;sub-collection-add-btn&quot;&gt;Add&#x20;sub&#x20;element&lt;&#x2F;button&gt;&#x0A;&lt;&#x2F;div&gt;">
+		</div>
+		<button id="collection-add-btn">Add element</button>
+		<script src="../symfonyCollectionJs.js"></script>
+		<script>
+			(function(){
+			  formCollection(document.querySelectorAll('#collection-root'), {
+			    other_btn_add:      '#collection-add-btn',
+			    btn_add_selector:     '.collection-elem-add',
+			    btn_delete_selector:  '.collection-elem-remove',
+			    btn_up_selector:  '.collection-elem-up',
+			    btn_down_selector:  '.collection-elem-down',
+			    call_post_add_on_init:  true,
+			    post_add:         function(new_elem, context) {
+			      formCollection(new_elem.querySelectorAll('.sub-collection-root'), {
+			    	other_btn_add:      new_elem.querySelectorAll('.sub-collection-add-btn'), // don't give just a selector in this case !
+			        btn_add_selector:     '.sub-collection-elem-add',
+			        btn_delete_selector:  '.sub-collection-elem-remove',
+			        btn_up_selector:  '.sub-collection-elem-up',
+			        btn_down_selector:  '.sub-collection-elem-down',
+			        call_post_add_on_init:  true,
+			        prototype_name:     '__subname__',
+			        call_post_add_on_init:  true,
+			        post_add:         function(new_elem, context) {
+			          formCollection(new_elem.querySelectorAll('.sub-sub-collection-root'), {
+			    		other_btn_add:      new_elem.querySelectorAll('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
+			            btn_add_selector:     '.sub-sub-collection-elem-add',
+			            btn_delete_selector:  '.sub-sub-collection-elem-remove',
+			            btn_up_selector:  '.sub-sub-collection-elem-up',
+			            btn_down_selector:  '.sub-sub-collection-elem-down',
+			            prototype_name:     '__subsubname__'
+			          });
+			        }
+			      });
+			    }
+			  });
+			})();
+		</script>
+	</body>
+</html>

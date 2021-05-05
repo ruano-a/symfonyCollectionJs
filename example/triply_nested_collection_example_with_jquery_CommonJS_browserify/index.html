@@ -4,7 +4,6 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width">
 		<title>Triply nested collection example</title>
-		<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.11.2.css">
 		<style>
 			.collection-elem{
 				border: green solid 3px;
@@ -44,40 +43,6 @@
 		</div>
 		<button id="collection-add-btn">Add element</button>
 		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="crossorigin="anonymous"></script>
-		<script src="../symfonyCollectionJs.js"></script>
-		<script>
-			$(document).ready(function(){
-			  $('#collection-root').formCollection({
-			    other_btn_add:      '#collection-add-btn',
-			    btn_add_selector:     '.collection-elem-add',
-			    btn_delete_selector:  '.collection-elem-remove',
-			    btn_up_selector:  '.collection-elem-up',
-			    btn_down_selector:  '.collection-elem-down',
-			    call_post_add_on_init:  true,
-			    post_add:         function($new_elem, context) {
-			      $new_elem.find('.sub-collection-root').formCollection({
-			    	other_btn_add:      $new_elem.find('.sub-collection-add-btn'), // don't give just a selector in this case !
-			        btn_add_selector:     '.sub-collection-elem-add',
-			        btn_delete_selector:  '.sub-collection-elem-remove',
-			        btn_up_selector:  '.sub-collection-elem-up',
-			        btn_down_selector:  '.sub-collection-elem-down',
-			        call_post_add_on_init:  true,
-			        prototype_name:     '__subname__',
-			        call_post_add_on_init:  true,
-			        post_add:         function($new_elem, context) {
-			          $new_elem.find('.sub-sub-collection-root').formCollection({
-			    		other_btn_add:      $new_elem.find('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
-			            btn_add_selector:     '.sub-sub-collection-elem-add',
-			            btn_delete_selector:  '.sub-sub-collection-elem-remove',
-			            btn_up_selector:  '.sub-sub-collection-elem-up',
-			            btn_down_selector:  '.sub-sub-collection-elem-down',
-			            prototype_name:     '__subsubname__'
-			          });
-			        }
-			      });
-			    }
-			  });
-			});
-		</script>
+		<script src="bundle.js"></script>
 	</body>
 </html>

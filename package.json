@@ -1,12 +1,11 @@
 {
   "name": "symfony-collection-js",
-  "version": "3.0.2",
-  "description": "A jquery plugin to dynamically create elements of a symfony form collection.",
+  "version": "4.0.0",
+  "description": "A plugin working with and without jquery to dynamically create elements of a symfony form collection.",
   "main": "symfonyCollectionJs.js",
   "repository": "https://github.com/ruano-a/symfonyCollectionJs.git",
   "author": "Aurelien Ruano <aurelien.ruano@epitech.eu>",
   "license": "MIT",
-  "peerDependencies": {
-    "jquery": "^1.12.4"
-  }
+  "peerDependencies": {},
+  "dependencies": {}
 }
