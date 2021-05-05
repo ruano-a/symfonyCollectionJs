@@ -13,6 +13,11 @@ yarn add symfony-collection-js
 npm install symfony-collection-js
 ```
 
+# Or include with a CDN
+```html
+<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.0.0-js-only/symfonyCollectionJs.min.js"></script>
+```
+
 # Basic usage
 
 Your collection container should have the prototype mentioned in the symfony documentation, and an id or a class. So in your form type:
