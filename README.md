@@ -52,7 +52,7 @@ var defaults =  {
         prototype_name:         '__name__'
     };
 ~~~~
-In post_up and post_down, switched_elem is the moved elem that the user didn't click on.
+In post_up and post_down, switched_elem is the moved elem that the user didn't click on.  
 prototype_name should probably be changed if you use nested collection (in the FormType too, with the same value).
 
 Note that the buttons are not created by the plugin but have to already exist.
@@ -115,10 +115,9 @@ Yes ! in the example folder, with and without jQuery, without and without loader
 Symfony (2 or more)
 
 # Notes
-If you're using this without jQuery, but with a loader (AMD, CommonJS, or anything), you MUST use a version on a branch / tag with "js-only" in the name! Otherwise it WILL NOT BUILD! (I didn't want to make
-several versions but tests ended showing that it was the best choice... Unless you have a better idea?)
+If you're using this without jQuery, but with a loader (AMD, CommonJS, or anything), you MUST use a version on a branch / tag with "js-only" in the name! Otherwise it WILL NOT BUILD! (I didn't want to make several versions but tests ended showing that it was the best choice... Unless you have a better idea?)
 
-This should theoretically work with unlimited nested collection. However if you encounter an issue, let me know.
-Don't hesitate to let me know if you're using this plugin, I'm super interested !
-For advances features, you should use the plugin of ninsuo.
+This should theoretically work with unlimited nested collection. However if you encounter an issue, let me know.  
+Don't hesitate to let me know if you're using this plugin, I'm super interested !  
+For advances features, you should use the plugin of ninsuo.  
 The file test/prep_nojquery_tests.js contains a homemade micro version of jQuery, I guess it can interest some people.
