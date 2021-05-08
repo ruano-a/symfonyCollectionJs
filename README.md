@@ -1,4 +1,4 @@
-# symfonyCollectionJs
+# symfonyCollectionJs [![](https://data.jsdelivr.com/v1/package/npm/symfony-collection-js/badge)](https://www.jsdelivr.com/package/npm/symfony-collection-js)
 A plugin working with and without jquery to dynamically create elements of a symfony form collection.
 
 I created this plugin because the common Js plugin had a bug that didn't let me place the button to add an element wherever I wanted.  And I wanted to be able to add dynamically elements.
@@ -11,6 +11,11 @@ yarn add symfony-collection-js
 # Or install with npm
 ```sh
 npm install symfony-collection-js
+```
+
+# Or include with a CDN
+```html
+<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.0.0/symfonyCollectionJs.min.js"></script>
 ```
 
 # Basic usage
@@ -52,7 +57,7 @@ var defaults =  {
         prototype_name:         '__name__'
     };
 ~~~~
-In post_up and post_down, switched_elem is the moved elem that the user didn't click on.
+In post_up and post_down, switched_elem is the moved elem that the user didn't click on.  
 prototype_name should probably be changed if you use nested collection (in the FormType too, with the same value).
 
 Note that the buttons are not created by the plugin but have to already exist.
@@ -114,10 +119,9 @@ Yes ! in the example folder, with and without jQuery, without and without loader
 Symfony (2 or more)
 
 # Notes
-If you're using this without jQuery, but with a loader (AMD, CommonJS, or anything), you MUST use a version on a branch / tag with "js-only" in the name! Otherwise it WILL NOT BUILD! (I didn't want to make
-several versions but tests ended showing that it was the best choice... Unless you have a better idea?)
+If you're using this without jQuery, but with a loader (AMD, CommonJS, or anything), you MUST use a version on a branch / tag with "js-only" in the name! Otherwise it WILL NOT BUILD! (I didn't want to make several versions but tests ended showing that it was the best choice... Unless you have a better idea?)
 
-This should theoretically work with unlimited nested collection. However if you encounter an issue, let me know.
-Don't hesitate to let me know if you're using this plugin, I'm super interested !
-For advances features, you should use the plugin of ninsuo.
+This should theoretically work with unlimited nested collection. However if you encounter an issue, let me know.  
+Don't hesitate to let me know if you're using this plugin, I'm super interested !  
+For advances features, you should use the plugin of ninsuo.  
 The file test/prep_nojquery_tests.js contains a homemade micro version of jQuery, I guess it can interest some people.
