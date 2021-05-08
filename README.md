@@ -108,7 +108,7 @@ formCollection.POST_DELETE_CONTEXT = {
 
 # How to start the tests
 
-## [Check this](./test/README.md)
+[Check this](./test/README.md)
 
 # Any advanced example ?
 
