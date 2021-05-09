@@ -108,8 +108,7 @@ formCollection.POST_DELETE_CONTEXT = {
 
 # How to start the tests
 
-Just open the page index_with_jquery.html or index_without_jquery.html in the test folder.  
-It starts the tests on opening.
+[Check this](./test/README.md)
 
 # Any advanced example ?
 

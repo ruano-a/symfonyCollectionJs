@@ -213,6 +213,16 @@ function hasDuplicates(arr)
 	return new Set(arr).size !== arr.length; 
 }
 
+if (typeof window.__html__ !== 'undefined') {
+  console.log('DEFINED')
+  /*QUnit.testStart( details => {
+    console.log( `Now running: ${details.module} ${details.name}` );
+    var fixture = document.getElementById('qunit-fixture');
+    fixture.innerHTML = window.__html__['test/base_fixtures'];
+  });*/
+  QUnit.config.fixture = window.__html__['test/base_fixtures'];
+}
+
 /* Note : in assert.equal, the expected is the 2nd param */
 QUnit.module('Registration / initializing', function() {
   if (typeof jQuery !== 'undefined') { // only useful for the tests with jQuery

@@ -1,0 +1,51 @@
+<!-- the base used before being encoded in the prototype attribute -->
+<div id="collection-root">
+    <div class="collection-elem">
+        <div>
+            <button class="collection-elem-add">+</button>
+            <button class="collection-elem-remove">-</button>
+            <button class="collection-elem-up">up</button>
+            <button class="collection-elem-down">down</button>
+        </div>
+        <h2>This is a collection element</h2>
+        <input type="text" id="form_collection___name___myinput" name="form[collection][__name__][myinput]">
+        <input type="text" id="form_collection___name___myotherinput" name="form[collection][__name__][myotherinput]">
+        <div class="sub-collection-root">
+            <div class="sub-collection-elem">
+                <div>
+                    <button class="sub-collection-elem-add">+</button>
+                    <button class="sub-collection-elem-remove">-</button>
+                    <button class="sub-collection-elem-up">up</button>
+                    <button class="sub-collection-elem-down">down</button>
+                </div>
+                <h2>This is a subcollection element</h2>
+                <input type="date" id="form_collection___name___subcollection___subname___begin" name="form[collection][__name__][subcollection][__subname__][begin]">
+                <input type="date" id="form_collection___name___subcollection___subname___end" name="form[collection][__name__][subcollection][__subname__][end]">
+                <div class="sub-sub-collection-root">
+                    <div class="sub-sub-collection-elem">
+                        <div>
+                            <button class="sub-sub-collection-elem-add">+</button>
+                            <button class="sub-sub-collection-elem-remove">-</button>
+                            <button class="sub-sub-collection-elem-up">up</button>
+                            <button class="sub-sub-collection-elem-down">down</button>
+                        </div>
+                        <h2>This is a sub-subcollection element</h2>
+                        <textarea id="form_collection___name___subcollection___subname___subsubcollection___subsubname___firstblabla" name="form[collection][__name__][subcollection][__subname__][subsubcollection][__subsubname__][firstblabla]"></textarea>
+                        <textarea id="form_collection___name___subcollection___subname___subsubcollection___subsubname___secondblabla" name="form[collection][__name__][subcollection][__subname__][subsubcollection][__subsubname__][secondblabla]"></textarea>
+                    </div>
+                </div>
+                <button class="sub-sub-collection-add-btn">Add sub sub element</button>
+            </div>
+        </div>
+        <button class="sub-collection-add-btn">Add sub element</button>
+    </div>
+</div>
+<button id="collection-add-btn">Add element</button>
+
+<!-- and for the collection with prototype -->
+<div id="collection-prototype-root" data-prototype="&lt;div&#x20;class&#x3D;&quot;collection-prototype-element&quot;&gt;&#x0A;&#x09;&lt;textarea&#x20;id&#x3D;&quot;form_collection___customproto___firstblabla&quot;&#x20;name&#x3D;&quot;form&#x5B;collection&#x5D;&#x5B;__customproto__&#x5D;&#x5B;firstblabla&#x5D;&quot;&gt;&lt;&#x2F;textarea&gt;&#x0A;&#x09;&lt;textarea&#x20;id&#x3D;&quot;form_collection___customproto___secondblabla&quot;&#x20;name&#x3D;&quot;form&#x5B;collection&#x5D;&#x5B;__customproto__&#x5D;&#x5B;secondblabla&#x5D;&quot;&gt;&lt;&#x2F;textarea&gt;&#x0A;&lt;&#x2F;div&gt;">
+    <div class="collection-prototype-element">
+        <textarea id="form_collection___customproto___firstblabla" name="form[collection][__customproto__][firstblabla]"></textarea>
+        <textarea id="form_collection___customproto___secondblabla" name="form[collection][__customproto__][secondblabla]"></textarea>
+    </div>
+</div>

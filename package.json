@@ -7,5 +7,16 @@
   "author": "Aurelien Ruano <aurelien.ruano@epitech.eu>",
   "license": "MIT",
   "peerDependencies": {},
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "karma": "^6.3.2",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-qunit": "^4.1.2",
+    "qunit": "^2.15.0"
+  },
+  "scripts": {
+    "test": "bash ./test/start.sh"
+  }
 }
