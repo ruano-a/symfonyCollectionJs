@@ -1,4 +1,4 @@
-# symfonyCollectionJs [![](https://data.jsdelivr.com/v1/package/npm/symfony-collection-js/badge)](https://www.jsdelivr.com/package/npm/symfony-collection-js)
+# symfonyCollectionJs [![](https://data.jsdelivr.com/v1/package/npm/symfony-collection-js/badge)](https://www.jsdelivr.com/package/npm/symfony-collection-js) [![codecov](https://codecov.io/gh/ruano-a/symfonyCollectionJs/branch/master/graph/badge.svg?token=Z93Y3NTP1Q)](https://codecov.io/gh/ruano-a/symfonyCollectionJs)
 A plugin working with and without jquery to dynamically create elements of a symfony form collection.
 
 I created this plugin because the common Js plugin had a bug that didn't let me place the button to add an element wherever I wanted.  And I wanted to be able to add dynamically elements.
