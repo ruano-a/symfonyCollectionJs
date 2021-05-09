@@ -15,5 +15,8 @@
     "karma-html2js-preprocessor": "^1.1.0",
     "karma-qunit": "^4.1.2",
     "qunit": "^2.15.0"
+  },
+  "scripts": {
+    "test": "bash ./test/start.sh"
   }
 }

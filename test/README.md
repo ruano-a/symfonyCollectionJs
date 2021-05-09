@@ -17,18 +17,10 @@ yarn install
 npm install
 ```
 
-Then if you don't have the karma CLI :
+Then start the tests :
 
 ```sh
-./node_modules/.bin/karma karma_jquery.conf.js #to test with jquery
-./node_modules/.bin/karma karma_nojquery.conf.js  #to test without jquery
-```
-
-If you do have the karma CLI (and it fixed issues for me) :
-
-```sh
-karma karma_jquery.conf.js #to test with jquery
-karma karma_nojquery.conf.js  #to test without jquery
+yarn test
 ```
 
 You can find the test coverage informations in the 'coverage' folder.
