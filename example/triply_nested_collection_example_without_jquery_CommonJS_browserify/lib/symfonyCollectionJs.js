@@ -28,7 +28,16 @@ var formCollection = function(nodeList, options, param) {
             }
         }
         return a;
-    }
+    };
+
+    var getEvent = function(eventName) {
+        if (typeof(Event) === 'function') {
+            return new Event(eventName);
+        }
+        var event = document.createEvent('Event');
+        event.initEvent(eventName, true, true);
+        return event;
+    };
 
     if (options === undefined || typeof options === 'object') {
         var defaults = {
@@ -71,7 +80,7 @@ var formCollection = function(nodeList, options, param) {
 
             switch (options) { // particular case, so it's better to have it at the top and forget it
             case 'add':
-            collection_root.dispatchEvent(new Event(eventAddMethodCalled));
+            collection_root.dispatchEvent(getEvent(eventAddMethodCalled));
             return;
             break;
             case 'delete':
@@ -79,7 +88,7 @@ var formCollection = function(nodeList, options, param) {
             return;
             break;
             case 'clear':
-            collection_root.dispatchEvent(new Event(eventClearMethodCalled));
+            collection_root.dispatchEvent(getEvent(eventClearMethodCalled));
             return;
             break;
             case 'refreshAttributes':
@@ -246,7 +255,7 @@ var formCollection = function(nodeList, options, param) {
                         node.setAttribute(name, value.replace(prototypeNameRegexp, index));
                     };
                     if ('data-prototype' in node.attributes) // if this node is a subcollection container
-                        node.dispatchEvent(new Event(eventPrototypeModified));
+                        node.dispatchEvent(getEvent(eventPrototypeModified));
                 }
             };
 

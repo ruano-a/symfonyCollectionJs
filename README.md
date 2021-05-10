@@ -15,7 +15,7 @@ npm install symfony-collection-js
 
 # Or include with a CDN
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.0.0-js-only/symfonyCollectionJs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.1.0-js-only/symfonyCollectionJs.min.js"></script>
 ```
 
 # Basic usage
