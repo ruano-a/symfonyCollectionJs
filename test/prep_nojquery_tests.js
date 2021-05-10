@@ -13,6 +13,15 @@ var µ = function(param) {
       return div.firstChild; 
   };
 
+  var getEvent = function(eventName) {
+      if (typeof(Event) === 'function') {
+          return new Event(eventName);
+      }
+      var event = document.createEvent('Event');
+      event.initEvent(eventName, true, true);
+      return event;
+  };
+
   var addMethods = function(result) {
 
     result.eq = function(i) {
@@ -59,7 +68,7 @@ var µ = function(param) {
 
     result.click = function() { // only triggers, doesn't set a listener, because there's no need here
       for (var i = 0; i < result.length; i++) {
-        result[i].dispatchEvent(new Event('click'));
+        result[i].dispatchEvent(getEvent('click'));
       }
       return result;
     };

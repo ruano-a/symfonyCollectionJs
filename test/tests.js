@@ -210,7 +210,9 @@ function assertSubSubElementNHasTheseValues(assert, n, subN, subsubN, value1, va
 
 function hasDuplicates(arr)
 {
-	return new Set(arr).size !== arr.length; 
+  return arr.some( function(item) {
+    return arr.indexOf(item) !== arr.lastIndexOf(item);
+  });
 }
 
 if (typeof window.__html__ !== 'undefined') {

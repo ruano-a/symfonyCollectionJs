@@ -5,7 +5,7 @@
   "authors": [
     "ruano-a"
   ],
-  "description": "A jquery plugin to dynamically create elements of a symfony form collection.",
+  "description": "A plugin working with and without jquery to dynamically create elements of a symfony form collection.",
   "keywords": [
     "js",
     "symfony",
