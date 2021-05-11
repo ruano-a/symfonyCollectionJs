@@ -112,7 +112,7 @@ formCollection.POST_DELETE_CONTEXT = {
 
 # Any advanced example ?
 
-Yes ! in the example folder, with and without jQuery, without and without loader.
+Yes ! in the example folder, with and without jQuery, with and without loader.
 
 # Requirement
 
