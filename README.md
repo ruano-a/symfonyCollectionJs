@@ -18,7 +18,7 @@ npm install symfony-collection-js
 <script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.1.0-js-only/symfonyCollectionJs.min.js"></script>
 ```
 
-# Basic usage
+# Basic usage (Check [here](#can-i-use-this-package-without-symfony-) to use without symfony)
 
 Your collection container should have the prototype mentioned in the symfony documentation, and an id or a class. So in your form type:
 ~~~~
@@ -116,7 +116,12 @@ Yes ! in the example folder, with and without jQuery, with and without loader.
 
 # Requirement
 
-Symfony (2 or more)
+Symfony 2 or more (For a normal usage, but you can use this without)
+
+# Can I use this package without symfony ?
+
+Absolutely, you only need to have the data-prototype attribute properly set.
+We provide you with [this example](./example/simple_collection_example_without_symfony.php) in php, but you can do this in every language, and most likely with most frameworks.
 
 # Notes
 If you're using this without jQuery, but with a loader (AMD, CommonJS, or anything), you MUST use a version on a branch / tag with "js-only" in the name! Otherwise it WILL NOT BUILD! (I didn't want to make several versions but tests ended showing that it was the best choice... Unless you have a better idea?)
