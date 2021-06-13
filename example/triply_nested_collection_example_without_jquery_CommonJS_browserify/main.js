@@ -1,5 +1,5 @@
 require('./lib/symfonyCollectionJs.js');
-// or require('symfonyCollectionJs.js'); if loaded with a package manager (and it should be)
+// or require('symfony-collection-js'); if loaded with a package manager (and it should be)
 
 (function(){
 	formCollection(document.querySelectorAll('#collection-root'), {
