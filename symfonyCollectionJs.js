@@ -43,16 +43,16 @@ var formCollection = function(nodeList, options, param) {
         var defaults = {
             max_elems: 100,
             call_post_add_on_init: false,
-            post_add: function(new_elem, context) {
+            post_add: function(new_elem, context, index) {
                 return true;
             },
-            post_delete: function(delete_elem, context) {
+            post_delete: function(delete_elem, context, index) {
                 return true;
             },
-            post_up: function(elem, switched_elem) {
+            post_up: function(elem, switched_elem, index) {
                 return true;
             },
-            post_down: function(elem, switched_elem) {
+            post_down: function(elem, switched_elem, index) {
                 return true;
             },
             other_btn_add: null,
@@ -122,7 +122,7 @@ var formCollection = function(nodeList, options, param) {
                 var param = e.detail;
                 var elem = collection_root.children[param];
                 delete_elem(elem);
-                settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.DELETE_METHOD);
+                settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, param);
             });
 
              collection_root.addEventListener(eventClearMethodCalled, function(e){
@@ -191,36 +191,40 @@ var formCollection = function(nodeList, options, param) {
                 inspect_model_tree(modelElement, []);
             };
 
+            // note : don't calculate the index outside the listeners
             var init_elem_listeners = function(elem) {
                 var btnAdds = elem.querySelectorAll(settings.btn_add_selector);
                 for (var i = 0; i < btnAdds.length; i++) {
                     btnAdds[i].addEventListener('click', function() {
                         var new_elem = add_elem_down(elem);
-                        settings.post_add(new_elem, formCollection.POST_ADD_CONTEXT.BTN_ADD);
+                        settings.post_add(new_elem, formCollection.POST_ADD_CONTEXT.BTN_ADD, sibling_index(new_elem));
                     });
                 }
                 var btnDeletes = elem.querySelectorAll(settings.btn_delete_selector);
                 for (var i = 0; i < btnDeletes.length; i++) {
                     btnDeletes[i].addEventListener('click', function() {
+                        var index = sibling_index(elem);
                         delete_elem(elem);
-                        settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.BTN_DELETE);
+                        settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.BTN_DELETE, index);
                     });
                 }
                 var btnUps = elem.querySelectorAll(settings.btn_up_selector);
                 for (var i = 0; i < btnUps.length; i++) {
                     btnUps[i].addEventListener('click', function() {
+                        var index = sibling_index(elem);
                         var switched_elem = move_elem_up(elem);
                         if (switched_elem) {
-                            settings.post_up(elem, switched_elem);
+                            settings.post_up(elem, switched_elem, index);
                         }
                     });
                 }
                 var btnDowns = elem.querySelectorAll(settings.btn_down_selector);
                 for (var i = 0; i < btnDowns.length; i++) {
                     btnDowns[i].addEventListener('click', function() {
+                        var index = sibling_index(elem);
                         var switched_elem = move_elem_down(elem);
                         if (switched_elem) {
-                            settings.post_down(elem, switched_elem);
+                            settings.post_down(elem, switched_elem, index);
                         }
                     });
                 }
@@ -313,7 +317,7 @@ var formCollection = function(nodeList, options, param) {
                 var new_elem = create_elem();
                 collection_root.appendChild(new_elem);
                 n++;
-                settings.post_add(new_elem, context);
+                settings.post_add(new_elem, context, n - 1);
             };
 
             var delete_elem = function(elem) {
@@ -352,7 +356,7 @@ var formCollection = function(nodeList, options, param) {
                     var child = collection_root.children[i];
                     init_elem_listeners(child);
                     if (settings.call_post_add_on_init)
-                        settings.post_add(child, formCollection.POST_ADD_CONTEXT.INIT);
+                        settings.post_add(child, formCollection.POST_ADD_CONTEXT.INIT, i);
                 }
             };
 

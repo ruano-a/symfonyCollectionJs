@@ -38,7 +38,6 @@ function initTripleCollection()
 				btn_down_selector:  	'.sub-collection-elem-down',
 				call_post_add_on_init:  true,
 				prototype_name:     	'__subname__',
-				call_post_add_on_init: 	true,
 				post_add:         		function(new_elem, context) {
 					µ(new_elem).find('.sub-sub-collection-root').formCollection({
 						other_btn_add: 			µ(new_elem).find('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
@@ -482,6 +481,30 @@ QUnit.module('post_add', function() {
     	µ('#collection-root').formCollection('add');
     	assert.equal(test, formCollection.POST_ADD_CONTEXT.ADD_METHOD, 'correct context with add method');
     });
+
+    QUnit.test('the post_add index should have the right value', function(assert) {
+      µ('#collection-root').append(guessCollectionElementResult(0)); // to preinit the content
+      µ('#collection-root').append(guessCollectionElementResult(1));
+      var test = [];
+      initSimpleCollection({
+        call_post_add_on_init:  true,
+        post_add:         function(µnew_elem, context, index) {
+          test.push(index);
+        }
+      });
+      assert.equal(test.length, 2, 'for a collection with 2 preinit elements, two indexes were given');
+      assert.equal(test[0], 0, 'the given index for the first preinit element is correct');
+      assert.equal(test[1], 1, 'the given index for the second preinit element is correct');
+      test = []; // reset
+      µ('#collection-add-btn').click(); //other_btn_add
+      assert.equal(test[0], 2, 'correct index on other_btn_add');
+      test = []; // reset
+      µ('.collection-elem-add').eq(0).click(); //btn_add_selector
+      assert.equal(test[0], 1, 'correct index on btn_add_selector');
+      test = []; // reset
+      µ('#collection-root').formCollection('add');
+      assert.equal(test[0], 4, 'correct index with add method');
+    });
  });
 
 QUnit.module('post_delete', function() {
@@ -519,6 +542,140 @@ QUnit.module('post_delete', function() {
     	test = false; // reset
     	µ('#collection-root').formCollection('delete', 0); // delete method
     	assert.equal(test, formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, 'correct context on delete method');
+    });
+
+    QUnit.test('the post_delete index has the right value', function(assert) {
+      var test = false;
+      initSimpleCollection({
+        post_delete: function(µdelete_elem, context, index) {
+          test = index;
+        }
+      });
+      assert.false(test); // to check that the callback isn't triggered without reason
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 2 elements
+      µ('.collection-elem-remove').eq(1).click(); // btn_delete_selector
+      assert.equal(test, 1, 'correct index on btn_delete_selector');
+      test = false; // reset
+      µ('#collection-root').formCollection('delete', 0); // delete method
+      assert.equal(test, 0, 'correct index on delete method');
+    });
+});
+
+QUnit.module('post_up', function() {
+    QUnit.test('post_up is triggered after clicking on btn_up_selector', function(assert) {
+      var test = false;
+      initSimpleCollection({
+        post_up: function(elem, switched_elem, index) {
+          test = true;
+        }
+      });
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 2 elements
+      assert.false(test); // to check that the callback isn't triggered without reason
+      µ('.collection-elem-up').eq(1).click(); // btn_up_selector
+      assert.true(test, 'post_up called after click on btn_up_selector');
+    });
+
+    QUnit.test('the post_up elem and switched_elem are correct', function(assert) {
+      var testElem = false;
+      var testSwitchedElem = false;
+      initSimpleCollection({
+        post_up: function(elem, switched_elem, index) {
+          testElem = elem;
+          testSwitchedElem = switched_elem;
+          assert.false(elem.isSameNode(switched_elem));
+        }
+      });
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 4 elements
+      assert.false(testElem); // to check that the callback isn't triggered without reason
+      assert.false(testSwitchedElem); // to check that the callback isn't triggered without reason again
+      var node2 = µ('#collection-root').children()[1];
+      var node3 = µ('#collection-root').children()[2];
+      µ('.collection-elem-up').eq(2).click(); // btn_up_selector
+      assert.true(node3.isSameNode(testElem), 'correct elem on btn_up_selector');
+      assert.true(node2.isSameNode(testSwitchedElem), 'correct elem on btn_up_selector');
+    });
+
+    QUnit.test('the post_up index has the right value', function(assert) {
+      var test = false;
+      initSimpleCollection({
+        post_up: function(elem, switched_elem, index) {
+          test = index;
+        }
+      });
+      assert.false(test); // to check that the callback isn't triggered without reason
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 4 elements
+      µ('.collection-elem-up').eq(2).click(); // btn_up_selector
+      assert.equal(test, 2, 'correct index with btn_up_selector');
+    });
+});
+
+QUnit.module('post_down', function() {
+    QUnit.test('post_down is triggered after clicking on btn_down_selector', function(assert) {
+      var test = false;
+      initSimpleCollection({
+        post_down: function(elem, switched_elem, index) {
+          test = true;
+        }
+      });
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 2 elements
+      assert.false(test); // to check that the callback isn't triggered without reason
+      µ('.collection-elem-down').eq(0).click(); // btn_down_selector
+      assert.true(test, 'post_down called after click on btn_down_selector');
+    });
+
+    QUnit.test('the post_down elem and switched_elem are correct', function(assert) {
+      var testElem = false;
+      var testSwitchedElem = false;
+      initSimpleCollection({
+        post_down: function(elem, switched_elem, index) {
+          testElem = elem;
+          testSwitchedElem = switched_elem;
+          assert.false(elem.isSameNode(switched_elem));
+        }
+      });
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 4 elements
+      assert.false(testElem); // to check that the callback isn't triggered without reason
+      assert.false(testSwitchedElem); // to check that the callback isn't triggered without reason again
+      var node2 = µ('#collection-root').children()[1];
+      var node3 = µ('#collection-root').children()[2];
+      µ('.collection-elem-down').eq(1).click(); // btn_down_selector
+      assert.true(node2.isSameNode(testElem), 'correct elem on btn_down_selector');
+      assert.true(node3.isSameNode(testSwitchedElem), 'correct elem on btn_down_selector');
+    });
+
+    QUnit.test('the post_down index has the right value', function(assert) {
+      var test = false;
+      initSimpleCollection({
+        post_down: function(elem, switched_elem, index) {
+          test = index;
+        }
+      });
+      assert.false(test); // to check that the callback isn't triggered without reason
+      µ('#collection-add-btn').click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      µ('.collection-elem-add').eq(0).click();
+      // now we have 4 elements
+      µ('.collection-elem-down').eq(2).click(); // btn_down_selector
+      assert.equal(test, 2, 'correct index with btn_down_selector');
     });
 });
 
