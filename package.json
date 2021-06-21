@@ -1,6 +1,6 @@
 {
   "name": "symfony-collection-js",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "A plugin working with and without jquery to dynamically create elements of a symfony form collection.",
   "main": "symfonyCollectionJs.js",
   "repository": "https://github.com/ruano-a/symfonyCollectionJs.git",
