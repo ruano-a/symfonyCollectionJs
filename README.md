@@ -112,7 +112,11 @@ formCollection.POST_DELETE_CONTEXT = {
 
 # Any advanced example ?
 
-Yes ! in the example folder, with and without jQuery, with and without loader.
+Yes! in the example folder, with and without jQuery, with and without loader.
+
+# Is there a Symfony UX integration?
+
+Yes! Just there : [UX Collection JS](https://github.com/tienvx/ux-collection-js)
 
 # Requirement
 
