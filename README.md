@@ -110,14 +110,18 @@ formCollection.POST_DELETE_CONTEXT = {
 
 [Check this](./test/README.md)
 
-# Any advanced example ?
+# Any advanced example?
 
 Yes ! in the example folder, with and without jQuery, with and without loader.
 
-# Can I use this package without symfony ?
+# Can I use this package without symfony?
 
 Absolutely, you only need to have the data-prototype attribute properly set.
 We provide you with [this example](./example/simple_collection_example_without_symfony.php) in php, but you can do this in every language, and most likely with most frameworks.
+
+# Is there a Symfony UX integration?
+
+Yes! Just there : [UX Collection JS](https://github.com/tienvx/ux-collection-js)
 
 # Requirement
 
