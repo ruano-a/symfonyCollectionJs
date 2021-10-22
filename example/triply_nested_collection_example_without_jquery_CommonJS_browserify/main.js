@@ -18,7 +18,6 @@ require('./lib/symfonyCollectionJs.js');
 			   	btn_down_selector:  '.sub-collection-elem-down',
 			   	call_post_add_on_init:  true,
 			   	prototype_name:     '__subname__',
-			   	call_post_add_on_init:  true,
 		    	post_add:         function(new_elem, context) {
 			    	formCollection(new_elem.querySelectorAll('.sub-sub-collection-root'), {
 			    	other_btn_add:      new_elem.querySelectorAll('.sub-sub-collection-add-btn'), // don't give just a selector in this case !
@@ -26,6 +25,7 @@ require('./lib/symfonyCollectionJs.js');
 			   		btn_delete_selector:  '.sub-sub-collection-elem-remove',
 			   		btn_up_selector:  '.sub-sub-collection-elem-up',
 			   		btn_down_selector:  '.sub-sub-collection-elem-down',
+			   		call_post_add_on_init:  false,
 		    		prototype_name:     '__subsubname__'
 		    	});
 		    }
