@@ -47,7 +47,7 @@ EOD;
 		<button id="collection-add-btn">Add element</button>
 		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="crossorigin="anonymous"></script>
 		<!-- Easier to test locally with a cdn -->
-		<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.1.0/symfonyCollectionJs.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.2.1/symfonyCollectionJs.min.js"></script>
 		<script>
 			$(document).ready(function(){
 			  $('#collection-root').formCollection({
