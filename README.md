@@ -18,7 +18,7 @@ npm install symfony-collection-js
 <script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.2.1/symfonyCollectionJs.min.js"></script>
 ```
 
-# Basic usage (Check [here](#can-i-use-this-package-without-symfony-) to use without symfony)
+# Basic usage (Check [here](#can-i-use-this-package-without-symfony) to use without symfony)
 
 Your collection container should have the prototype mentioned in the symfony documentation, and an id or a class. So in your form type:
 ~~~~
