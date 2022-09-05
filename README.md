@@ -92,7 +92,7 @@ formCollection(document.querySelectorAll('.collection'), 'refreshAttributes', 0)
 formCollection(document.getElementById('myId'), 'refreshAttributes', 0); // in pure javascript with an id
 ~~~~
 
-The context argument in post_add and post_delete will have one of theses values, depending on how it's called:
+The context argument in post_add and post_delete will have one of these values, depending on how it's called:
 ~~~~
 formCollection.POST_ADD_CONTEXT = {
     BTN_ADD:        4,
