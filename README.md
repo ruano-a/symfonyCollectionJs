@@ -92,7 +92,7 @@ formCollection(document.querySelectorAll('.collection'), 'refreshAttributes', 0)
 formCollection(document.getElementById('myId'), 'refreshAttributes', 0); // in pure javascript with an id
 ~~~~
 
-The context argument in post_add and post_delete will have of this values, depending on how it's called:
+The context argument in post_add and post_delete will have one of these values, depending on how it's called:
 ~~~~
 formCollection.POST_ADD_CONTEXT = {
     BTN_ADD:        4,
@@ -110,7 +110,7 @@ formCollection.POST_DELETE_CONTEXT = {
 
 [Check this](./test/README.md)
 
-# Any advanced example ?
+# Any advanced example?
 
 Yes! in the example folder, with and without jQuery, with and without loader.
 
@@ -122,7 +122,7 @@ Yes! Just there : [UX Collection JS](https://github.com/tienvx/ux-collection-js)
 
 Symfony 2 or more (For a normal usage, but you can use this without)
 
-# Can I use this package without symfony ?
+# Can I use this package without symfony?
 
 Absolutely, you only need to have the data-prototype attribute properly set.
 We provide you with [this example](./example/simple_collection_example_without_symfony.php) in php, but you can do this in every language, and most likely with most frameworks.
