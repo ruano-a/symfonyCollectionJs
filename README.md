@@ -14,8 +14,13 @@ npm install symfony-collection-js
 ```
 
 # Or include with a CDN
+cdnjs
 ```html
-<script src="https://cdn.jsdelivr.net/gh/ruano-a/symfonyCollectionJs@4.2.1/symfonyCollectionJs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/symfonyCollectionJs/4.2.2/symfonyCollectionJs.min.js" integrity="sha512-qpIx6aHqQROnCNHHFS+Iy/XwPltKFouhUaCkmV6ezBx9BDn0hEKNZ/MOxiDbh/DV+YO5y213L+3Yy3ELuS1pFw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+```
+jsDelivr
+```html
+<script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.2.2/symfonyCollectionJs.js" integrity="sha256-TqiIwHEuIWW+oaCkji48jcRSk9//MR0xMkku7jr47rg=" crossorigin="anonymous"></script>
 ```
 
 # Basic usage (Check [here](#can-i-use-this-package-without-symfony) to use without symfony)
