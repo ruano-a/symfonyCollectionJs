@@ -20,7 +20,7 @@ cdnjs
 ```
 jsDelivr
 ```html
-<script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.2.2/symfonyCollectionJs.js" integrity="sha256-TqiIwHEuIWW+oaCkji48jcRSk9//MR0xMkku7jr47rg=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.2.2/dist/symfonyCollectionJs.min.js" integrity="sha256-IO7KKu1yWhFkJucWVZN8Ot19gTXqOqbPF0AawG0IbPQ=" crossorigin="anonymous"></script>
 ```
 
 # Basic usage (Check [here](#can-i-use-this-package-without-symfony) to use without symfony)
