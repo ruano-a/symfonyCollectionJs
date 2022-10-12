@@ -49,10 +49,15 @@ formCollection(document.getElementById('myId')); // in pure javascript with an i
 ~~~~
 var defaults =  {
         max_elems:              100,
+        call_pre_add_on_init:   false,
         call_post_add_on_init:  false,
+        pre_add:                function(context, index) { return true; },
         post_add:               function(new_elem, context, index) { return true; },
+        pre_delete:             function(delete_elem, context, index) { return true; },
         post_delete:            function(delete_elem, context, index) { return true; },
+        pre_up:                 function(elem, switched_elem, index) { return true; },
         post_up:                function(elem, switched_elem, index) { return true; },
+        pre_down:               function(elem, switched_elem, index) { return true; },
         post_down:              function(elem, switched_elem, index) { return true; },
         other_btn_add:          null,
         btn_add_selector:       '.collection-add',
@@ -62,7 +67,7 @@ var defaults =  {
         prototype_name:         '__name__'
     };
 ~~~~
-In post_up and post_down, switched_elem is the moved elem that the user didn't click on.  
+In pre_up, post_up, pre_down and post_down, switched_elem is the moved elem that the user didn't click on.  
 prototype_name should probably be changed if you use nested collection (in the FormType too, with the same value).
 
 Note that the buttons are not created by the plugin but have to already exist.
@@ -83,7 +88,7 @@ formCollection(document.querySelectorAll('.collection'), 'delete', 2); // in pur
 formCollection(document.getElementById('myId'), 'delete', 2); // in pure javascript with an id
 ~~~~
 
-Clear every element (doesn't call post_delete):
+Clear every element (doesn't call pre_delete nor post_delete):
 ~~~~
 $('.collection').formCollection('clear'); // with jQuery
 formCollection(document.querySelectorAll('.collection'), 'clear'); // in pure javascript with a selector
@@ -97,19 +102,21 @@ formCollection(document.querySelectorAll('.collection'), 'refreshAttributes', 0)
 formCollection(document.getElementById('myId'), 'refreshAttributes', 0); // in pure javascript with an id
 ~~~~
 
-The context argument in post_add and post_delete will have one of these values, depending on how it's called:
+The context argument in pre_add, post_add, pre_delete, and post_delete will have one of these values, depending on how it's called:
 ~~~~
-formCollection.POST_ADD_CONTEXT = {
+formCollection.ADD_CONTEXT = {
     BTN_ADD:        4,
     OTHER_BTN_ADD:  8,
     INIT:           15,
     ADD_METHOD:     16
 };
-formCollection.POST_DELETE_CONTEXT = {
+formCollection.DELETE_CONTEXT = {
     BTN_DELETE:     23,
     DELETE_METHOD:  42
 };
 ~~~~
+
+If pre_add, pre_delete, pre_up, pre_down return false, the operation (add, delete, up, down) isn't executed (for pre_add, the return doesn't affect the initialization of existing elements).
 
 # How to start the tests
 

@@ -5,7 +5,7 @@
 
   function CustomEvent ( event, params ) {
     params = params || { bubbles: false, cancelable: false, detail: null };
-    var evt = document.createEvent( 'CustomEvent' );
+    let evt = document.createEvent( 'CustomEvent' );
     evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
     return evt;
    }
@@ -13,16 +13,16 @@
   window.CustomEvent = CustomEvent;
 })();
 
-var formCollection = function(nodeList, options, param) {
-    var settings;
-    var eventPrototypeModified              = 'prototypeModified';
-    var eventAddMethodCalled                = 'addMethodCalled';
-    var eventDeleteMethodCalled             = 'deleteMethodCalled';
-    var eventClearMethodCalled              = 'clearMethodCalled';
-    var eventRefreshAttributesMethodCalled  = 'refreshAttributesMethodCalled';
+let formCollection = function(nodeList, options, param) {
+    let settings;
+    let eventPrototypeModified              = 'prototypeModified';
+    let eventAddMethodCalled                = 'addMethodCalled';
+    let eventDeleteMethodCalled             = 'deleteMethodCalled';
+    let eventClearMethodCalled              = 'clearMethodCalled';
+    let eventRefreshAttributesMethodCalled  = 'refreshAttributesMethodCalled';
 
-    var extend = function (a, b) {
-        for (var key in b) {
+    let extend = function (a, b) {
+        for (let key in b) {
             if (b.hasOwnProperty(key)) {
                 a[key] = b[key];
             }
@@ -30,26 +30,39 @@ var formCollection = function(nodeList, options, param) {
         return a;
     };
 
-    var getEvent = function(eventName) {
+    let getEvent = function(eventName) {
         if (typeof(Event) === 'function') {
             return new Event(eventName);
         }
-        var event = document.createEvent('Event');
+        let event = document.createEvent('Event');
         event.initEvent(eventName, true, true);
         return event;
     };
 
     if (options === undefined || typeof options === 'object') {
-        var defaults = {
+        let defaults = {
             max_elems: 100,
+            call_pre_add_on_init: false,
             call_post_add_on_init: false,
+            pre_add: function(context, index) {
+                return true;
+            },
             post_add: function(new_elem, context, index) {
+                return true;
+            },
+            pre_delete: function(delete_elem, context, index) {
                 return true;
             },
             post_delete: function(delete_elem, context, index) {
                 return true;
             },
+            pre_up: function(elem, switched_elem, index) {
+                return true;
+            },
             post_up: function(elem, switched_elem, index) {
+                return true;
+            },
+            pre_down: function(elem, switched_elem, index) {
                 return true;
             },
             post_down: function(elem, switched_elem, index) {
@@ -65,18 +78,18 @@ var formCollection = function(nodeList, options, param) {
         settings = extend(defaults, options);
     } else if (typeof options === 'string') {
         if (['add', 'delete', 'clear', 'refreshAttributes'].indexOf(options) === -1) {
-            console.log('Invalid options');
+            console.error('Invalid options');
             return false;
         } else if (options === 'delete' && param === undefined) {
-            console.log('Missing index');
+            console.error('Missing index');
             return false;
         }
     }
     if (nodeList instanceof Node)
         nodeList = [nodeList];
     // at this point nodeList is either a real NodeList, or an array
-    for (var i = 0; i < nodeList.length; i++) {
-        var collection_root        = nodeList[i];
+    for (let i = 0; i < nodeList.length; i++) {
+        let collection_root        = nodeList[i];
 
             switch (options) { // particular case, so it's better to have it at the top and forget it
             case 'add':
@@ -96,9 +109,9 @@ var formCollection = function(nodeList, options, param) {
             return;
             break;
         }
-        var prototype               = collection_root.getAttribute('data-prototype');
-        var n                       = collection_root.children.length;
-        var needed_data_for_update  = [];
+        let prototype               = collection_root.getAttribute('data-prototype');
+        let n                       = collection_root.children.length;
+        let needed_data_for_update  = [];
 
         /* triggered by a parent collection if this collection is a subcollection */
         collection_root.addEventListener(eventPrototypeModified, function(e){
@@ -114,37 +127,39 @@ var formCollection = function(nodeList, options, param) {
              * the listener way below is a trick to allow a second call to formCollection to access the same
              * data (elements, options)
              */
-             collection_root.addEventListener(eventAddMethodCalled, function(e){
-                add_elem_bottom(formCollection.POST_ADD_CONTEXT.ADD_METHOD);
+            collection_root.addEventListener(eventAddMethodCalled, function(e){
+                add_elem_bottom(formCollection.ADD_CONTEXT.ADD_METHOD);
             });
 
-             collection_root.addEventListener(eventDeleteMethodCalled, function(e){
-                var param = e.detail;
-                var elem = collection_root.children[param];
+            collection_root.addEventListener(eventDeleteMethodCalled, function(e){
+                let param = e.detail;
+                let elem = collection_root.children[param];
+                if (settings.pre_delete(elem, formCollection.DELETE_CONTEXT.DELETE_METHOD, param) === false)
+                    return;
                 delete_elem(elem);
-                settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.DELETE_METHOD, param);
+                settings.post_delete(elem, formCollection.DELETE_CONTEXT.DELETE_METHOD, param);
             });
 
-             collection_root.addEventListener(eventClearMethodCalled, function(e){
+            collection_root.addEventListener(eventClearMethodCalled, function(e){
                 collection_root.textContent = ""; //innerHTML has a bug on IE, and is slower anyway
                 n = 0;
             });
 
-             collection_root.addEventListener(eventRefreshAttributesMethodCalled, function(e){
-                var param = e.detail;
+            collection_root.addEventListener(eventRefreshAttributesMethodCalled, function(e){
+                let param = e.detail;
                 update_indexes_from(param);
             });
 
-             var build_node_needed_data_for_update = function(path, attributes) {
-                var obj = {
+            let build_node_needed_data_for_update = function(path, attributes) {
+                let obj = {
                     path:       path,
                     attributes: attributes
                 };
                 return obj;
             };
 
-            var createNode = function(html) { // equivalent of JQuery(html)
-                var div = document.createElement('div');
+            let createNode = function(html) { // equivalent of JQuery(html)
+                let div = document.createElement('div');
                 div.innerHTML = html.trim();
 
                 // Should be childNodes and not firstChild if there can be several unwrapped elements. But not here
@@ -170,9 +185,9 @@ var formCollection = function(nodeList, options, param) {
              *      },
              * ]
              */
-             var inspect_model_tree = function(modelNode, currentPath) {
+            let inspect_model_tree = function(modelNode, currentPath) {
                 /* First the root, simple (if it's a wrapper there should be nothing, but it can be an input too) */
-                var attrs = getAttributesWithThisValue(modelNode, settings.prototype_name); // get attributes with placeholders
+                let attrs = getAttributesWithThisValue(modelNode, settings.prototype_name); // get attributes with placeholders
                 if (Object.keys(attrs).length > 0) {
                     /* the path is an empty array for the root node */
                     needed_data_for_update.push(build_node_needed_data_for_update(currentPath, attrs));
@@ -180,60 +195,71 @@ var formCollection = function(nodeList, options, param) {
                 if ('data-prototype' in attrs) // if the current node is a subcollection
                     return; // no need to dig in its childs, it will be handled separately
                 /* Then we need to traverse */
-                var modelNodeChilds = modelNode.children;
-                for (var i = 0; i < modelNodeChilds.length; i++) {
+                let modelNodeChilds = modelNode.children;
+                for (let i = 0; i < modelNodeChilds.length; i++) {
                     inspect_model_tree(modelNodeChilds[i], currentPath.concat([i]));//concat creates a new array
                 }
             };
 
-            var init_needed_data_for_update = function() {
-                var modelElement = createNode(prototype);
+            let init_needed_data_for_update = function() {
+                let modelElement = createNode(prototype);
                 inspect_model_tree(modelElement, []);
             };
 
             // note : don't calculate the index outside the listeners
-            var init_elem_listeners = function(elem) {
-                var btnAdds = elem.querySelectorAll(settings.btn_add_selector);
-                for (var i = 0; i < btnAdds.length; i++) {
+            let init_elem_listeners = function(elem) {
+                let btnAdds = elem.querySelectorAll(settings.btn_add_selector);
+                for (let i = 0; i < btnAdds.length; i++) {
                     btnAdds[i].addEventListener('click', function() {
-                        var new_elem = add_elem_down(elem);
-                        settings.post_add(new_elem, formCollection.POST_ADD_CONTEXT.BTN_ADD, sibling_index(new_elem));
+                        let index = sibling_index(elem) + 1;
+                        if (settings.pre_add(formCollection.ADD_CONTEXT.BTN_ADD, index) === false)
+                            return;
+                        let new_elem = add_elem_down(elem);
+                        settings.post_add(new_elem, formCollection.ADD_CONTEXT.BTN_ADD, index);
                     });
                 }
-                var btnDeletes = elem.querySelectorAll(settings.btn_delete_selector);
-                for (var i = 0; i < btnDeletes.length; i++) {
+                let btnDeletes = elem.querySelectorAll(settings.btn_delete_selector);
+                for (let i = 0; i < btnDeletes.length; i++) {
                     btnDeletes[i].addEventListener('click', function() {
-                        var index = sibling_index(elem);
+                        let index = sibling_index(elem);
+                        if (settings.pre_delete(elem, formCollection.DELETE_CONTEXT.BTN_DELETE, index) === false)
+                            return;
                         delete_elem(elem);
-                        settings.post_delete(elem, formCollection.POST_DELETE_CONTEXT.BTN_DELETE, index);
+                        settings.post_delete(elem, formCollection.DELETE_CONTEXT.BTN_DELETE, index);
                     });
                 }
-                var btnUps = elem.querySelectorAll(settings.btn_up_selector);
-                for (var i = 0; i < btnUps.length; i++) {
+                let btnUps = elem.querySelectorAll(settings.btn_up_selector);
+                for (let i = 0; i < btnUps.length; i++) {
                     btnUps[i].addEventListener('click', function() {
-                        var index = sibling_index(elem);
-                        var switched_elem = move_elem_up(elem);
-                        if (switched_elem) {
+                        let index = sibling_index(elem);
+                        let switched_elem = elem.previousElementSibling; // previousSibling finds some invisible text elements
+                        if (!switched_elem || settings.pre_up(elem, switched_elem, index) === false)
+                            return;
+                        switched_elem = move_elem_up(elem);
+                        if (switched_elem) { // should always be true, but I prefer to keep it
                             settings.post_up(elem, switched_elem, index);
                         }
                     });
                 }
-                var btnDowns = elem.querySelectorAll(settings.btn_down_selector);
-                for (var i = 0; i < btnDowns.length; i++) {
+                let btnDowns = elem.querySelectorAll(settings.btn_down_selector);
+                for (let i = 0; i < btnDowns.length; i++) {
                     btnDowns[i].addEventListener('click', function() {
-                        var index = sibling_index(elem);
-                        var switched_elem = move_elem_down(elem);
-                        if (switched_elem) {
+                        let index = sibling_index(elem);
+                        let switched_elem = elem.nextElementSibling; // nextSibling finds some invisible text elements
+                        if (!switched_elem || settings.pre_down(elem, switched_elem, index) === false)
+                            return;
+                        switched_elem = move_elem_down(elem);
+                        if (switched_elem) { // should always be true, but I prefer to keep it
                             settings.post_down(elem, switched_elem, index);
                         }
                     });
                 }
             };
 
-            var getAttributesWithThisValue = function(elem, value) {
-                var result = {};
-                for (var i = 0; i < elem.attributes.length; i++) {
-                    var attr = elem.attributes[i];
+            let getAttributesWithThisValue = function(elem, value) {
+                let result = {};
+                for (let i = 0; i < elem.attributes.length; i++) {
+                    let attr = elem.attributes[i];
                     if (attr.value && attr.value.indexOf(value) !== -1) {
                         result[attr.name] = attr.value;
                     }
@@ -241,21 +267,21 @@ var formCollection = function(nodeList, options, param) {
                 return result;
             };
 
-            var update_index = function(elem, index) {
+            let update_index = function(elem, index) {
                 /* without regexp, replace only replaces the first occurrence */
-                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
-                for (var i = 0; i < needed_data_for_update.length; i++) { 
-                    var nodeData = needed_data_for_update[i];
-                    var node = elem;
-                    for (var j = 0; j < nodeData.path.length; j++) {  // we follow the path
-                        var childIndex = nodeData.path[j];
+                let prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
+                for (let i = 0; i < needed_data_for_update.length; i++) { 
+                    let nodeData = needed_data_for_update[i];
+                    let node = elem;
+                    for (let j = 0; j < nodeData.path.length; j++) {  // we follow the path
+                        let childIndex = nodeData.path[j];
                         node = node.children[childIndex];
                     };
                     //now we have the right node
-                    var attributesNames = Object.keys(nodeData.attributes);
-                    for (var j = 0; j < attributesNames.length; j++) {
-                        var name = attributesNames[j];
-                        var value = nodeData.attributes[name]; //value has a placeholder
+                    let attributesNames = Object.keys(nodeData.attributes);
+                    for (let j = 0; j < attributesNames.length; j++) {
+                        let name = attributesNames[j];
+                        let value = nodeData.attributes[name]; //value has a placeholder
                         node.setAttribute(name, value.replace(prototypeNameRegexp, index));
                     };
                     if ('data-prototype' in node.attributes) // if this node is a subcollection container
@@ -264,74 +290,76 @@ var formCollection = function(nodeList, options, param) {
             };
 
             // if i > to the max index, it doesn't cause problems
-            var update_indexes_from = function(i) {
-                var elements = collection_root.children;
-                for (var j = i; j < elements.length; j++) {
+            let update_indexes_from = function(i) {
+                let elements = collection_root.children;
+                for (let j = i; j < elements.length; j++) {
                     update_index(elements[j], j);
                 }
             };
 
-            var create_elem = function(index) {
+            let create_elem = function(index) {
                 if (index === undefined)
                     index = n;
-                var newFormHtml = prototype; // we create an elem with the prototype, but placeholders must be replaced
-                var prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
+                let newFormHtml = prototype; // we create an elem with the prototype, but placeholders must be replaced
+                let prototypeNameRegexp = new RegExp(settings.prototype_name, 'g');
                 //won't replace the ones in data since we put an alias
                 newFormHtml = newFormHtml.replace(prototypeNameRegexp, index);
-                var newForm = createNode(newFormHtml);
+                let newForm = createNode(newFormHtml);
                 init_elem_listeners(newForm);
                 return newForm;
             };
 
-            var sibling_index = function(node) {
-                var i = 0;
+            let sibling_index = function(node) {
+                let i = 0;
                 while ((node = node.previousElementSibling) != null) { //previousSibling finds some invisible text elements
                     i++;
                 }
                 return i;
             };
 
-            var insert_before = function (node, toInsert) {
+            let insert_before = function (node, toInsert) {
                 // Only supported for HTMLElement, not all Element objects, such as SVGElement.
                 node.insertAdjacentElement('beforebegin', toInsert);
             };
 
-            var insert_after = function (node, toInsert) {
+            let insert_after = function (node, toInsert) {
                 // Only supported for HTMLElement, not all Element objects, such as SVGElement.
                 node.insertAdjacentElement('afterend', toInsert);
             };
 
-            var add_elem_down = function(elem) {
+            let add_elem_down = function(elem) {
                 if (n >= settings.max_elems)
                     return false;
-                var new_elem = create_elem(sibling_index(elem) + 1);
+                let new_elem = create_elem(sibling_index(elem) + 1);
                 insert_after(elem, new_elem);
                 n++;
                 update_indexes_from(sibling_index(elem) + 2);
                 return new_elem;
             };
 
-            var add_elem_bottom = function(context) {
+            let add_elem_bottom = function(context) {
                 if (n >= settings.max_elems)
                     return false;
-                var new_elem = create_elem();
+                if (settings.pre_add(context, n) === false)
+                    return;
+                let new_elem = create_elem();
                 collection_root.appendChild(new_elem);
                 n++;
                 settings.post_add(new_elem, context, n - 1);
             };
 
-            var delete_elem = function(elem) {
-                var index = sibling_index(elem);
+            let delete_elem = function(elem) {
+                let index = sibling_index(elem);
                 elem.parentNode.removeChild(elem);
                 n--;
                 update_indexes_from(index);
             };
 
-            var move_elem_up = function(elem) {
-                var prev = elem.previousElementSibling; //previousSibling finds some invisible text elements
+            let move_elem_up = function(elem) {
+                let prev = elem.previousElementSibling; //previousSibling finds some invisible text elements
                 if (!prev)
                     return false;
-                var newIndex = sibling_index(prev);
+                let newIndex = sibling_index(prev);
                 insert_before(prev, elem);
                 update_index(elem, newIndex);
                 update_index(prev, newIndex + 1);
@@ -339,11 +367,11 @@ var formCollection = function(nodeList, options, param) {
                 return prev;
             };
 
-            var move_elem_down = function(elem) {
-                var next = elem.nextElementSibling; //nextSibling finds some invisible text elements
+            let move_elem_down = function(elem) {
+                let next = elem.nextElementSibling; //nextSibling finds some invisible text elements
                 if (!next)
                     return false;
-                var newIndex = sibling_index(next);
+                let newIndex = sibling_index(next);
                 insert_after(next, elem);
                 update_index(elem, newIndex);
                 update_index(next, newIndex - 1);
@@ -351,19 +379,25 @@ var formCollection = function(nodeList, options, param) {
                 return next;
             };
 
-            var init_existing = function() {
-                for (var i = 0; i < collection_root.children.length; i++) {
-                    var child = collection_root.children[i];
+            let init_existing = function() {
+                for (let i = 0; i < collection_root.children.length; i++) {
+                    /*
+                     * Doesn't prevent the init if returns false (because it's necessary since the element is there anyway)
+                     * But could remove the element in future development?
+                     */
+                    if (settings.call_pre_add_on_init)
+                        settings.pre_add(formCollection.ADD_CONTEXT.INIT, i);
+                    let child = collection_root.children[i];
                     init_elem_listeners(child);
                     if (settings.call_post_add_on_init)
-                        settings.post_add(child, formCollection.POST_ADD_CONTEXT.INIT, i);
+                        settings.post_add(child, formCollection.ADD_CONTEXT.INIT, i);
                 }
             };
 
             init_existing();
             init_needed_data_for_update();
             if (settings.other_btn_add) {
-                var otherBtnAdds = null;
+                let otherBtnAdds = null;
                 if (typeof settings.other_btn_add === 'string')
                     otherBtnAdds = document.querySelectorAll(settings.other_btn_add);
                 else if (settings.other_btn_add instanceof Node)
@@ -371,12 +405,12 @@ var formCollection = function(nodeList, options, param) {
                 else if ((formCollection.jQuery && settings.other_btn_add instanceof formCollection.jQuery) || settings.other_btn_add instanceof NodeList)
                     otherBtnAdds = settings.other_btn_add;
                 else {
-                    console.log('other_btn_add: bad value, can be a selector or nodes, or a jQuery object.');
+                    console.error('other_btn_add: bad value, can be a selector or nodes, or a jQuery object.');
                 }
                 if (otherBtnAdds) {
-                    for (var i = 0; i < otherBtnAdds.length; i++) {
+                    for (let i = 0; i < otherBtnAdds.length; i++) {
                         otherBtnAdds[i].addEventListener('click', function() {
-                            add_elem_bottom(formCollection.POST_ADD_CONTEXT.OTHER_BTN_ADD);
+                            add_elem_bottom(formCollection.ADD_CONTEXT.OTHER_BTN_ADD);
                         });
                     }
                 }
@@ -384,16 +418,18 @@ var formCollection = function(nodeList, options, param) {
         };
 };
 
-formCollection.POST_ADD_CONTEXT = {
+formCollection.ADD_CONTEXT = {
     BTN_ADD:        4,
     OTHER_BTN_ADD:  8,
     INIT:           15,
     ADD_METHOD:     16
 };
-formCollection.POST_DELETE_CONTEXT = {
+formCollection.DELETE_CONTEXT = {
     BTN_DELETE:     23,
     DELETE_METHOD:  42
 };
+formCollection.POST_ADD_CONTEXT = formCollection.ADD_CONTEXT; // to avoid breaking changes, for now
+formCollection.POST_DELETE_CONTEXT = formCollection.DELETE_CONTEXT; // to avoid breaking changes, for now
 // UMD : Uses CommonJS, AMD or browser globals
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
