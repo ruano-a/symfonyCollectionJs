@@ -2,3 +2,4 @@
 /.nyc_output/
 /coverage/
 /example/triply_nested_collection_example_without_jquery_CommonJS_browserify/node_modules/
+yarn-error.log
