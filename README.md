@@ -16,11 +16,11 @@ npm install symfony-collection-js
 # Or include with a CDN
 cdnjs
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/symfonyCollectionJs/4.3.0-js-only/symfonyCollectionJs.min.js" integrity="sha512-l9Psf3Btp3lerrlkH9l/zEowYitxtuVIg+HeT2emW2KZp6wkKaUxf53ecbRC+0N3fNqCyHYi9ZnPeyZ9b/d/TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/symfonyCollectionJs/4.3.1-js-only/symfonyCollectionJs.min.js" integrity="sha512-l9Psf3Btp3lerrlkH9l/zEowYitxtuVIg+HeT2emW2KZp6wkKaUxf53ecbRC+0N3fNqCyHYi9ZnPeyZ9b/d/TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 ```
 jsDelivr
 ```html
-<script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.3.0-js-only/dist/symfonyCollectionJs.min.js" integrity="sha256-V4HwFFXrsUKRHVYw2ixFsESJGR2FoMnS5J0O059ZXYw=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.3.1-js-only/dist/symfonyCollectionJs.min.js" integrity="sha256-V4HwFFXrsUKRHVYw2ixFsESJGR2FoMnS5J0O059ZXYw=" crossorigin="anonymous"></script>
 ```
 
 # Basic usage (Check [here](#can-i-use-this-package-without-symfony-) to use without symfony)
