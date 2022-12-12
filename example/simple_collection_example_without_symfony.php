@@ -3,7 +3,6 @@
 	function getCollectionElementHtml(): string
 	{
 		$html = <<<EOD
-<div id="collection-root">
     <div class="collection-elem">
         <div>
             <button class="collection-elem-add">+</button>
@@ -15,8 +14,6 @@
         <input type="text" id="form_collection___name___myinput" name="form[collection][__name__][myinput]">
         <input type="text" id="form_collection___name___myotherinput" name="form[collection][__name__][myotherinput]">
     </div>
-</div>
-<button id="collection-add-btn">Add element</button>
 EOD;
 		return $html;
 	}
