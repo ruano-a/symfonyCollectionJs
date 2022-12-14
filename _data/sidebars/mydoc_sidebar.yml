@@ -1,0 +1,103 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  product: symfonyCollectionJs doc
+  version: 4.3.1
+  folders:
+
+  - title:
+    output: pdf
+    type: frontmatter
+    folderitems:
+    - title:
+      url: /titlepage.html
+      output: pdf
+      type: frontmatter
+    - title:
+      url: /tocpage.html
+      output: pdf
+      type: frontmatter
+
+  - title: Demo
+    output: web, pdf
+    folderitems:
+
+    - title: Simple usage
+      url: /index.html
+      output: web
+      type: homepage
+
+    - title: Triply nested usage
+      url: /demo-triple.html
+      output: web
+
+  - title: Install
+    output: web, pdf
+    folderitems:
+
+    - title: With a package manager (yarn / npm)
+      url: /install-package.html
+      output: web, pdf
+
+    - title: With a CDN
+      url: /install-cdn.html
+      output: web, pdf
+
+  - title: Usage
+    output: web, pdf
+    folderitems:
+
+    - title: Usage Symfony side
+      url: /usage-symfony.html
+      output: web, pdf
+
+    - title: Options
+      url: /usage-options.html
+      output: web, pdf
+
+    - title: Other functionalities
+      url: /usage-other.html
+      output: web, pdf
+
+  - title: Automated tests
+    output: web, pdf
+    folderitems:
+
+    - title: How to start the tests
+      url: /tests-start.html
+      output: web, pdf
+
+  - title: Without symfony
+    output: web, pdf
+    folderitems:
+
+    - title: How to use without symfony
+      url: /without-symfony.html
+      output: web, pdf
+
+  - title: Symfony UX
+    output: web, pdf
+    folderitems:
+
+    - title: Symfony UX integration
+      url: /symfony-ux.html
+      output: web, pdf
+
+  - title: Requirements
+    output: web, pdf
+    folderitems:
+
+    - title: Requirement list
+      url: /requirement-list.html
+      output: web, pdf
+
+  - title: Notes
+    output: web, pdf
+    folderitems:
+
+    - title: Notes
+      url: /notes.html
+      output: web, pdf
+
+# Copyright 2021 Google LLC
