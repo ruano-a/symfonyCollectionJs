@@ -3,6 +3,7 @@ A plugin working with and without jquery to dynamically create elements of a sym
 
 I created this plugin because the common Js plugin had a bug that didn't let me place the button to add an element wherever I wanted.  And I wanted to be able to add dynamically elements.
 
+[Doc pages here](https://ruano-a.github.io/symfonyCollectionJs/)
 # Install with yarn
 ```sh
 yarn add symfony-collection-js
