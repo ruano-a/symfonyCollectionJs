@@ -91,4 +91,4 @@ $basicRoot.formCollection('add'); // to init with one element
 
 (The design is purely an example, you're responsible of it)
 <script src="https://cdn.jsdelivr.net/npm/symfony-collection-js@4.3.1/dist/symfonyCollectionJs.min.js" integrity="sha256-96Lcx06vADOwwjV0CW7BlC92yedSb7898vE2ErDUj38=" crossorigin="anonymous"></script>
-<script src="/js/mydoc_demo-simple.js"></script>
+<script src="./js/mydoc_demo-simple.js"></script>
